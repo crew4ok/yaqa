@@ -51,7 +51,6 @@ public class DaoConfig {
     public static class LocalDatabaseConfig {
         @Bean(name = "dbUsername")
         public String dbUsername() {
-            System.out.println("activating local");
             return "yaqa";
         }
 
