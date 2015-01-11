@@ -43,7 +43,7 @@ public class QuestionController {
         return questionService.getByTagName(tagName);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public QuestionWithComments createQuestion(@Valid @RequestBody CreateQuestionRequest questionRequest,
                                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
