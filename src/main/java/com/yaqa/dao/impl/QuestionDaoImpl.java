@@ -4,8 +4,6 @@ import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.entity.QuestionEntity;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
@@ -28,8 +26,9 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
 
     @Override
     public Long getLikeCount(QuestionEntity question) {
-        return em.createQuery("select count(q.likes) " +
+        return em.createQuery("select count(l) " +
                         " from QuestionEntity q " +
+                        " inner join q.likes l " +
                         " where q = :question ",
                 Long.class)
                 .setParameter("question", question)
