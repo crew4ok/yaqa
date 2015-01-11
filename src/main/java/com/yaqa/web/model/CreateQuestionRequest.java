@@ -15,6 +15,7 @@ public class CreateQuestionRequest {
     @NotNull
     private final String body;
 
+    @NotNull
     private final List<Tag> tags;
 
     @JsonCreator

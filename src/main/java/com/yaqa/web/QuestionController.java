@@ -45,7 +45,7 @@ public class QuestionController {
 
     @RequestMapping(method = RequestMethod.POST)
     public QuestionWithComments createQuestion(@Valid @RequestBody CreateQuestionRequest questionRequest,
-                                                 BindingResult bindingResult) {
+                                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
