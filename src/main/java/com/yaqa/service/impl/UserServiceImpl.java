@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public void registerNewUser(User user) {
         userDao.save(new UserEntity(user.getUsername(), passwordEncoder.encode(user.getPassword())));
     }
