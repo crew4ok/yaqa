@@ -82,7 +82,7 @@ public class QuestionServiceImpl implements QuestionService {
         final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(question.getTags());
         final List<Tag> notExistingTags = question.getTags()
                 .stream()
-                .filter(t -> existingEntities.keySet().contains(t))
+                .filter(t -> !existingEntities.keySet().contains(t))
                 .collect(Collectors.toList());
 
         final List<TagEntity> newTagEntities = notExistingTags.stream()

@@ -51,12 +51,12 @@ public class DaoConfig {
     public static class LocalDatabaseConfig {
         @Bean(name = "dbUsername")
         public String dbUsername() {
-            return "yaqa";
+            return "crew4ok";
         }
 
         @Bean(name = "dbPassword")
         public String dbPassword() {
-            return "yaqa";
+            return "stalker";
         }
 
         @Bean(name = "dbUrl")
