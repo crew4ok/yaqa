@@ -28,7 +28,7 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Question> getAllQuestions() {
         return questionService.getAll();
     }
