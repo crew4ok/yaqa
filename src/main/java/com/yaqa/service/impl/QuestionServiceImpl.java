@@ -75,12 +75,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionWithComments createNewQuestion(Question question, List<Tag> tags) {
+    public QuestionWithComments createNewQuestion(Question question) {
         final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
         final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
 
-        final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(tags);
-        final List<Tag> notExistingTags = tags
+        final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(question.getTags());
+        final List<Tag> notExistingTags = question.getTags()
                 .stream()
                 .filter(t -> existingEntities.keySet().contains(t))
                 .collect(Collectors.toList());

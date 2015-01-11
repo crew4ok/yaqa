@@ -57,9 +57,10 @@ public class QuestionController {
 
         final Question question = new Question(null,
                 questionRequest.getTitle(),
-                questionRequest.getBody()
+                questionRequest.getBody(),
+                tags
         );
-        return questionService.createNewQuestion(question, tags);
+        return questionService.createNewQuestion(question);
     }
 
     @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)
