@@ -28,17 +28,17 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @RequestMapping("/")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Question> getAllQuestions() {
         return questionService.getAll();
     }
 
-    @RequestMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public QuestionWithComments getQuestionById(@PathVariable("id") Long id) {
         return questionService.getByIdWithComments(id);
     }
 
-    @RequestMapping("/tag/{tag}")
+    @RequestMapping(value = "/tag/{tag}", method = RequestMethod.GET)
     public List<Question> getQuestionsByTag(@PathVariable("tag") String tagName) {
         return questionService.getByTagName(tagName);
     }
@@ -62,7 +62,7 @@ public class QuestionController {
         return questionService.createNewQuestion(question, tags);
     }
 
-    @RequestMapping("/{id}/like")
+    @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)
     public LikeResult likeQuestion(@PathVariable("id") Long id) {
         return questionService.likeQuestion(id);
     }
