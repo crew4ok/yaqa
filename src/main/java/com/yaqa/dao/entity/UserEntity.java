@@ -9,6 +9,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,17 +30,17 @@ public class UserEntity {
     private List<QuestionEntity> questions;
 
     @OneToMany
-    private List<CommentEntity> comments;
+    private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToMany
-    private List<LikeEntity> likes;
+    private List<LikeEntity> likes = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "user_tags",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<TagEntity> subscriptionTags;
+    private List<TagEntity> subscriptionTags = new ArrayList<>();
 
     /**
      * Default constructor used by hibernate.

@@ -1,6 +1,5 @@
 package com.yaqa.dao.entity;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -17,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,10 +39,10 @@ public class QuestionEntity {
     private LocalDateTime creationDate = LocalDateTime.now(DateTimeZone.UTC);
 
     @OneToMany
-    private List<LikeEntity> likes;
+    private List<LikeEntity> likes = new ArrayList<>();
 
     @OneToMany
-    private List<CommentEntity> comments;
+    private List<CommentEntity> comments = new ArrayList<>();
 
     @NotNull
     @ManyToOne
@@ -53,7 +53,7 @@ public class QuestionEntity {
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<TagEntity> tags;
+    private List<TagEntity> tags = new ArrayList<>();
 
     /**
      * Default constructor used by hibernate.

@@ -7,6 +7,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,10 +22,10 @@ public class TagEntity {
     private String tagName;
 
     @ManyToMany(mappedBy = "tags")
-    private List<QuestionEntity> taggedQuestions;
+    private List<QuestionEntity> taggedQuestions = new ArrayList<>();
 
     @ManyToMany(mappedBy = "subscriptionTags")
-    private List<UserEntity> subscribedUsers;
+    private List<UserEntity> subscribedUsers = new ArrayList<>();
 
     /**
      * Default constructor used by hibernate.
