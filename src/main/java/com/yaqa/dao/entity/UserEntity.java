@@ -26,13 +26,13 @@ public class UserEntity {
     @NotNull
     private String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
     private List<QuestionEntity> questions;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "liker")
     private List<LikeEntity> likes = new ArrayList<>();
 
     @ManyToMany

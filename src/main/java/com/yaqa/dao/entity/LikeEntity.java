@@ -3,8 +3,10 @@ package com.yaqa.dao.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "likes")
@@ -13,13 +15,17 @@ public class LikeEntity {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     @ManyToOne
+    @JoinColumn(name = "liker")
     private UserEntity liker;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id")
     private CommentEntity comment;
 
     @ManyToOne
+    @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
     /**

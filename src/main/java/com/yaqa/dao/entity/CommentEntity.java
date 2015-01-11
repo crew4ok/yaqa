@@ -3,6 +3,7 @@ package com.yaqa.dao.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,13 +23,15 @@ public class CommentEntity {
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name = "author")
     private UserEntity author;
 
-    @OneToMany
+    @OneToMany(mappedBy = "comment")
     private List<LikeEntity> likes = new ArrayList<>();
 
     /**

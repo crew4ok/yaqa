@@ -38,14 +38,15 @@ public class QuestionEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime creationDate = LocalDateTime.now(DateTimeZone.UTC);
 
-    @OneToMany
+    @OneToMany(mappedBy = "question")
     private List<LikeEntity> likes = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "question")
     private List<CommentEntity> comments = new ArrayList<>();
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name = "author")
     private UserEntity author;
 
     @ManyToMany
