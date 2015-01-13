@@ -1,7 +1,6 @@
 package com.yaqa.config;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,13 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder())
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, 1 from users where username = ?")
-                .authoritiesByUsernameQuery("select ?, 'ROLE_USER'");
+                .authoritiesByUsernameQuery("select ?, 'USER'");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .accessDeniedHandler((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+
+                .and()
                 .authorizeRequests()
                 .antMatchers("/register/**", "/login").permitAll()
                 .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").hasRole("USER")
@@ -48,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .successHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_OK))
-                .failureHandler((request, response, auth) -> response.setStatus(418))
+                .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST))
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
