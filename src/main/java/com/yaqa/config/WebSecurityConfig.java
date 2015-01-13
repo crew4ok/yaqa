@@ -23,7 +23,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
@@ -39,8 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/register/**").permitAll()
-                .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").authenticated()
-                .and().httpBasic();
+                .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").permitAll()
+                .and().formLogin();
     }
 
 
