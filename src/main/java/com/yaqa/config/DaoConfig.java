@@ -63,7 +63,6 @@ public class DaoConfig {
         public String dbUrl() {
             return "jdbc:postgresql://localhost:5432/yaqa";
         }
-
     }
 
     @Autowired

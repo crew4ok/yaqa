@@ -1,5 +1,7 @@
 package com.yaqa.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 @Configuration
@@ -23,13 +27,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .passwordEncoder(passwordEncoder())
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, 1 from users where username = ?")
-                .authoritiesByUsernameQuery("select ?, 'USER'");
+                .authoritiesByUsernameQuery("select ?, 'ROLE_USER'");
     }
 
     @Override
@@ -37,9 +42,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/register/**").permitAll()
-                .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").permitAll()
-                .and().formLogin();
+                .antMatchers("/register/**", "/login").permitAll()
+                .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").hasRole("USER")
+
+                .and()
+                .formLogin()
+                .successHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_OK))
+                .failureHandler((request, response, auth) -> response.setStatus(418))
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+        ;
     }
 
 
