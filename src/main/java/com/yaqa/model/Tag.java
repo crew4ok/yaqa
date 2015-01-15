@@ -1,5 +1,7 @@
 package com.yaqa.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yaqa.dao.entity.TagEntity;
 
 public class Tag {
@@ -10,7 +12,9 @@ public class Tag {
         return new Tag(tagEntity.getId(), tagEntity.getTagName());
     }
 
-    public Tag(Long id, String tagName) {
+    @JsonCreator
+    public Tag(@JsonProperty("id") Long id,
+               @JsonProperty("tagName") String tagName) {
         this.id = id;
         this.tagName = tagName;
     }

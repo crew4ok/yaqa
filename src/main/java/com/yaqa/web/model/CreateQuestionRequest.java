@@ -2,6 +2,7 @@ package com.yaqa.web.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yaqa.model.Tag;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
