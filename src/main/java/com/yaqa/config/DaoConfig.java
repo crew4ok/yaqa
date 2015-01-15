@@ -65,6 +65,26 @@ public class DaoConfig {
         }
     }
 
+    @Configuration
+    @Profile("test")
+    public static class TestDatabaseConfig {
+
+        @Bean(name = "dbUrl")
+        public String dbUrl() {
+            return "jdbc:h2:mem:test";
+        }
+
+        @Bean(name = "dbUsername")
+        public String dbUsername() {
+            return "";
+        }
+
+        @Bean(name = "dbPassword")
+        public String dbPassword() {
+            return "";
+        }
+    }
+
     @Autowired
     @Qualifier("dbUsername")
     private String dbUsername;

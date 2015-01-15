@@ -17,6 +17,8 @@ public interface QuestionService {
 
     List<Question> getByTagName(String tagName);
 
+    List<Question> getByUserSubscription();
+
     QuestionWithComments createNewQuestion(Question question);
 
     QuestionWithComments postComment(Long questionId, Comment comment);

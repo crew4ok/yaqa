@@ -78,4 +78,9 @@ public class QuestionController {
 
         return questionService.postComment(questionId, new Comment(postCommentRequest.getBody(), null));
     }
+
+    @RequestMapping(value = "/subscription", method = RequestMethod.GET)
+    public List<Question> getQuestionsBySubscription() {
+        return questionService.getByUserSubscription();
+    }
 }

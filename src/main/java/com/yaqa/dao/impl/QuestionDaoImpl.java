@@ -2,6 +2,7 @@ package com.yaqa.dao.impl;
 
 import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.entity.QuestionEntity;
+import com.yaqa.dao.entity.TagEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,5 +34,17 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
                 Long.class)
                 .setParameter("question", question)
                 .getSingleResult();
+    }
+
+    @Override
+    public List<QuestionEntity> getByTags(List<TagEntity> tags) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " inner join q.tags as t " +
+                        " where t in :tags " +
+                        " group by q.id",
+                QuestionEntity.class)
+                .setParameter("tags", tags)
+                .getResultList();
     }
 }
