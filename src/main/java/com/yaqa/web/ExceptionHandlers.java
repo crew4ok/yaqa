@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExceptionHandlers {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlers.class);
 
-
     @ExceptionHandler(YaqaBaseException.class)
     public ResponseEntity<ErrorResponse> yaqaExceptionHandler(YaqaBaseException e) {
         LOG.warn("yaqa exception", e);
