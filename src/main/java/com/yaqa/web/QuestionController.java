@@ -76,6 +76,6 @@ public class QuestionController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.postComment(questionId, new Comment(postCommentRequest.getBody()));
+        return questionService.postComment(questionId, new Comment(postCommentRequest.getBody(), null));
     }
 }

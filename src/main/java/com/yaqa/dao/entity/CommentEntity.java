@@ -1,5 +1,10 @@
 package com.yaqa.dao.entity;
 
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +25,11 @@ public class CommentEntity {
 
     @NotNull
     private String body;
+
+    @NotNull
+    @Column(updatable = false, nullable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    private LocalDateTime creationDate = LocalDateTime.now(DateTimeZone.UTC);
 
     @NotNull
     @ManyToOne
@@ -84,5 +94,9 @@ public class CommentEntity {
 
     public void setQuestion(QuestionEntity question) {
         this.question = question;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 }

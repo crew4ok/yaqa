@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getCurrentAuthenticatedUser() {
         final Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-        final String username = (String) currentAuthentication.getPrincipal();
+        final String username = ((org.springframework.security.core.userdetails.User) currentAuthentication.getPrincipal())
+                .getUsername();
 
         return User.of(userDao.getByUsername(username));
     }
