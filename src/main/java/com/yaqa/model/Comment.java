@@ -8,21 +8,23 @@ public class Comment {
     private final String body;
     private final LocalDateTime creationDate;
     private final User author;
+    private final Integer likeCount;
 
     public static Comment of(CommentEntity commentEntity) {
         return new Comment(
                 commentEntity.getId(),
                 commentEntity.getBody(),
                 commentEntity.getCreationDate(),
-                User.of(commentEntity.getAuthor())
-        );
+                User.of(commentEntity.getAuthor()),
+                commentEntity.getLikes().size());
     }
 
-    public Comment(Long id, String body, LocalDateTime creationDate, User author) {
+    public Comment(Long id, String body, LocalDateTime creationDate, User author, Integer likeCount) {
         this.id = id;
         this.body = body;
         this.creationDate = creationDate;
         this.author = author;
+        this.likeCount = likeCount;
     }
 
     public String getBody() {
@@ -39,5 +41,9 @@ public class Comment {
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
     }
 }
