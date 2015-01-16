@@ -11,6 +11,8 @@ import com.yaqa.model.User;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.RegistrationRequest;
 import com.yaqa.web.model.UpdateUserProfileRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
@@ -62,10 +65,14 @@ public class UserServiceImpl implements UserService {
 
         final String newPassword = request.getPassword();
         final List<Tag> newTags = request.getTags();
+        final String newProfileImage = request.getProfileImage();
 
+        // update password
         if (newPassword != null && !newPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(newPassword));
         }
+
+        // update tags
         if (newTags != null && !newTags.isEmpty()) {
             final Map<Tag, TagEntity> foundEntities = tagDao.mapTagsToEntities(newTags);
 
@@ -79,6 +86,11 @@ public class UserServiceImpl implements UserService {
                     .collect(Collectors.toList());
 
             user.getSubscriptionTags().addAll(tagsToAttach);
+        }
+
+        // update profile image
+        if (newProfileImage != null && !newProfileImage.isEmpty()) {
+            user.setProfileImage(newProfileImage);
         }
 
         userDao.save(user);
