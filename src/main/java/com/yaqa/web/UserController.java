@@ -6,6 +6,7 @@ import com.yaqa.service.UserService;
 import com.yaqa.web.model.UpdateUserProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public User getUserById(@PathVariable("id") Long userId) {
+        return userService.getById(userId);
+    }
 
     @RequestMapping(method = RequestMethod.PATCH)
     public User updateUserProfile(@Valid @RequestBody UpdateUserProfileRequest request,

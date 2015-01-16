@@ -26,6 +26,12 @@ public class UserEntity {
     @NotNull
     private String password;
 
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
+
     private String profileImage;
 
     @OneToMany(mappedBy = "author")
@@ -49,13 +55,16 @@ public class UserEntity {
      */
     public UserEntity() { }
 
-    public UserEntity(String username, String password) {
+    public UserEntity(String username, String password, String firstName, String lastName, String email) {
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
-    public UserEntity(String username, String password, String profileImage) {
-        this(username, password);
+    public UserEntity(String username, String password, String firstName, String lastName, String email, String profileImage) {
+        this(username, password, firstName, lastName, email);
         this.profileImage = profileImage;
     }
 
@@ -121,5 +130,29 @@ public class UserEntity {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
