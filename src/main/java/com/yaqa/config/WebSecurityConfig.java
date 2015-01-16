@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .successHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_OK))
-                .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST))
+                .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
