@@ -55,14 +55,7 @@ public class QuestionController {
                 .map(t -> new Tag(null, t.getTagName()))
                 .collect(Collectors.toList());
 
-        final Question question = new Question(
-                null,
-                questionRequest.getTitle(),
-                questionRequest.getBody(),
-                null,
-                null,
-                tags
-        );
+        final Question question = new Question(questionRequest.getBody(), tags);
         return questionService.createNewQuestion(question);
     }
 

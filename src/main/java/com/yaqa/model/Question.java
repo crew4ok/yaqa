@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 public class Question {
     private final Long id;
-    private final String title;
     private final String body;
     private final LocalDateTime creationDate;
     private final User author;
@@ -17,7 +16,6 @@ public class Question {
     public static Question of(QuestionEntity questionEntity) {
         return new Question(
                 questionEntity.getId(),
-                questionEntity.getTitle(),
                 questionEntity.getBody(),
                 questionEntity.getCreationDate(),
                 User.of(questionEntity.getAuthor()),
@@ -25,9 +23,12 @@ public class Question {
         );
     }
 
-    public Question(Long id, String title, String body, LocalDateTime creationDate, User author, List<Tag> tags) {
+    public Question(String body, List<Tag> tags) {
+        this(null, body, null, null, tags);
+    }
+
+    public Question(Long id, String body, LocalDateTime creationDate, User author, List<Tag> tags) {
         this.id = id;
-        this.title = title;
         this.body = body;
         this.creationDate = creationDate;
         this.author = author;
@@ -36,10 +37,6 @@ public class Question {
 
     public Long getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getBody() {
