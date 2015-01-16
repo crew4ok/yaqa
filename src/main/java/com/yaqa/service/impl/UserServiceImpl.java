@@ -52,13 +52,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long userId, UpdateUserProfileRequest request) {
-        final UserEntity user = userDao.getById(userId);
+    public User updateUser(UpdateUserProfileRequest request) {
+        final User currentUser = getCurrentAuthenticatedUser();
+        final UserEntity user = userDao.getById(currentUser.getId());
 
         final String newPassword = request.getPassword();
         final List<Tag> newTags = request.getTags();
 
-        if (newPassword != null && !newPassword.equals("")) {
+        if (newPassword != null && !newPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(newPassword));
         }
         if (newTags != null && !newTags.isEmpty()) {

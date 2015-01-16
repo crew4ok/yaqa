@@ -8,7 +8,7 @@ public interface UserService {
 
     void registerNewUser(RegistrationRequest request);
 
-    User updateUser(Long userId, UpdateUserProfileRequest request);
+    User updateUser(UpdateUserProfileRequest request);
 
     User getCurrentAuthenticatedUser();
 }
