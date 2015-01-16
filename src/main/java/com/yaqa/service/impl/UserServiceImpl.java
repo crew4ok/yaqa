@@ -52,6 +52,9 @@ public class UserServiceImpl implements UserService {
             userDao.save(new UserEntity(
                     request.getUsername(),
                     passwordEncoder.encode(request.getPassword()),
+                    request.getFirstName(),
+                    request.getLastName(),
+                    request.getEmail(),
                     request.getProfileImage()
             ));
         }
@@ -64,12 +67,28 @@ public class UserServiceImpl implements UserService {
         final UserEntity user = userDao.getById(currentUser.getId());
 
         final String newPassword = request.getPassword();
+        final String firstName = request.getFirstName();
+        final String lastName = request.getLastName();
+        final String email = request.getEmail();
         final List<Tag> newTags = request.getTags();
         final String newProfileImage = request.getProfileImage();
 
         // update password
         if (newPassword != null && !newPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(newPassword));
+        }
+
+        // update firstName and lastName
+        if (firstName != null && !firstName.isEmpty()) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            user.setLastName(lastName);
+        }
+
+        // update email
+        if (email != null && !email.isEmpty()) {
+            user.setEmail(email);
         }
 
         // update tags
@@ -105,5 +124,10 @@ public class UserServiceImpl implements UserService {
                 .getUsername();
 
         return User.of(userDao.getByUsername(username));
+    }
+
+    @Override
+    public User getById(Long userId) {
+        return User.of(userDao.getById(userId));
     }
 }

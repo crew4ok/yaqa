@@ -11,4 +11,6 @@ public interface UserService {
     User updateUser(UpdateUserProfileRequest request);
 
     User getCurrentAuthenticatedUser();
+
+    User getById(Long userId);
 }
