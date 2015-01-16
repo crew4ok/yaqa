@@ -11,6 +11,7 @@ public class Question {
     private final String body;
     private final LocalDateTime creationDate;
     private final User author;
+    private final Integer likesCount;
     private final List<Tag> tags;
 
     public static Question of(QuestionEntity questionEntity) {
@@ -19,19 +20,21 @@ public class Question {
                 questionEntity.getBody(),
                 questionEntity.getCreationDate(),
                 User.of(questionEntity.getAuthor()),
+                questionEntity.getLikes().size(),
                 questionEntity.getTags().stream().map(Tag::of).collect(Collectors.toList())
         );
     }
 
     public Question(String body, List<Tag> tags) {
-        this(null, body, null, null, tags);
+        this(null, body, null, null, null, tags);
     }
 
-    public Question(Long id, String body, LocalDateTime creationDate, User author, List<Tag> tags) {
+    public Question(Long id, String body, LocalDateTime creationDate, User author, Integer likesCount, List<Tag> tags) {
         this.id = id;
         this.body = body;
         this.creationDate = creationDate;
         this.author = author;
+        this.likesCount = likesCount;
         this.tags = tags;
     }
 
@@ -53,5 +56,9 @@ public class Question {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public Integer getLikesCount() {
+        return likesCount;
     }
 }
