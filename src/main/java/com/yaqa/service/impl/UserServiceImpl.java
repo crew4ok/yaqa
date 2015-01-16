@@ -46,7 +46,11 @@ public class UserServiceImpl implements UserService {
             // if user exists, throw an exception
             throw new NotUniqueUsernameException("Username is not unique");
         } catch (EmptyResultDataAccessException e) {
-            userDao.save(new UserEntity(request.getUsername(), passwordEncoder.encode(request.getPassword())));
+            userDao.save(new UserEntity(
+                    request.getUsername(),
+                    passwordEncoder.encode(request.getPassword()),
+                    request.getProfileImage()
+            ));
         }
     }
 

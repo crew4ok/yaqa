@@ -26,6 +26,8 @@ public class UserEntity {
     @NotNull
     private String password;
 
+    private String profileImage;
+
     @OneToMany(mappedBy = "author")
     private List<QuestionEntity> questions;
 
@@ -50,6 +52,11 @@ public class UserEntity {
     public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserEntity(String username, String password, String profileImage) {
+        this(username, password);
+        this.profileImage = profileImage;
     }
 
     public Long getId() {
@@ -106,5 +113,13 @@ public class UserEntity {
 
     public void setLikes(List<LikeEntity> likes) {
         this.likes = likes;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
