@@ -22,4 +22,15 @@ public class CommentDaoImpl extends GenericDaoImpl<CommentEntity> implements Com
                 .setParameter("question", questionEntity)
                 .getResultList();
     }
+
+    @Override
+    public Long getLikeCount(CommentEntity comment) {
+        return em.createQuery("select count(l) " +
+                        " from CommentEntity c " +
+                        " inner join c.likes as l " +
+                        " where c = :comment",
+                Long.class)
+                .setParameter("comment", comment)
+                .getSingleResult();
+    }
 }

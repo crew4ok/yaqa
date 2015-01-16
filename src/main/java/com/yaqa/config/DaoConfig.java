@@ -17,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.yaqa.dao")
@@ -117,6 +118,11 @@ public class DaoConfig {
         factory.setDataSource(dataSource());
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("com.yaqa.dao.entity");
+
+        Properties jpaProperties = new Properties();
+        jpaProperties.setProperty("show_sql", "true");
+        jpaProperties.setProperty("format_sql", "true");
+        factory.setJpaProperties(jpaProperties);
 
         return factory;
     }

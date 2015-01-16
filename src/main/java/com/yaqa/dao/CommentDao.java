@@ -9,4 +9,6 @@ public interface CommentDao extends GenericDao<CommentEntity> {
 
 
     List<CommentEntity> findByQuestion(QuestionEntity questionEntity);
+
+    Long getLikeCount(CommentEntity comment);
 }
