@@ -30,6 +30,6 @@ public class CommentController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.editComment(commentId, new Comment(postCommentRequest.getBody(), null));
+        return questionService.editComment(commentId, new Comment(null, postCommentRequest.getBody(), null, null));
     }
 }

@@ -72,7 +72,7 @@ public class QuestionController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.postComment(questionId, new Comment(postCommentRequest.getBody(), null));
+        return questionService.postComment(questionId, new Comment(null, postCommentRequest.getBody(), null, null));
     }
 
     @RequestMapping(value = "/subscription", method = RequestMethod.GET)
