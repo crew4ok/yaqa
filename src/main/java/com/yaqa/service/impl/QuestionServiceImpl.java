@@ -106,7 +106,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         newTagEntities.addAll(existingEntities.values());
         final QuestionEntity questionEntity = new QuestionEntity(
-                question.getTitle(),
                 question.getBody(),
                 currentUserEntity,
                 newTagEntities

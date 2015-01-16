@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +24,6 @@ public class QuestionEntity {
     @Id
     @GeneratedValue
     private Long id;
-
-    @NotNull
-    @Size(max = 128)
-    private String title;
 
     @NotNull
     private String body;
@@ -61,8 +56,7 @@ public class QuestionEntity {
      * */
     public QuestionEntity() { }
 
-    public QuestionEntity(String title, String body, UserEntity author, List<TagEntity> tags) {
-        this.title = title;
+    public QuestionEntity(String body, UserEntity author, List<TagEntity> tags) {
         this.body = body;
         this.author = author;
         this.tags = tags;
@@ -77,7 +71,6 @@ public class QuestionEntity {
 
         if (!body.equals(that.body)) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (!title.equals(that.title)) return false;
 
         return true;
     }
@@ -85,7 +78,6 @@ public class QuestionEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + title.hashCode();
         result = 31 * result + body.hashCode();
         return result;
     }
@@ -96,14 +88,6 @@ public class QuestionEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getBody() {

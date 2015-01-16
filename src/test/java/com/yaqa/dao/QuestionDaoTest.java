@@ -36,8 +36,8 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
         final String firstTagName = "tag1";
         final String secondTagName = "tag2";
 
-        final QuestionEntity question = new QuestionEntity("title", "body",
-                createUser(), Arrays.asList(createTag(firstTagName), createTag(secondTagName)));
+        final QuestionEntity question = new QuestionEntity("body", createUser(),
+                Arrays.asList(createTag(firstTagName), createTag(secondTagName)));
 
         questionDao.save(question);
 
@@ -56,9 +56,9 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
         final UserEntity user = createUser(tags);
 
         final List<QuestionEntity> questions = Arrays.asList(
-                createQuestion("title", "body", user, Collections.singletonList(tags.get(0))),
-                createQuestion("title", "body", user, tags.subList(0, 2)),
-                createQuestion("title", "body", user, tags.subList(1, 3))
+                createQuestion("body", user, Collections.singletonList(tags.get(0))),
+                createQuestion("body", user, tags.subList(0, 2)),
+                createQuestion("body", user, tags.subList(1, 3))
         );
 
         final List<QuestionEntity> actualQuestions = questionDao.getByTags(tags);
@@ -70,8 +70,8 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
         assertEquals(actualQuestions, questions);
     }
 
-    private QuestionEntity createQuestion(String title, String body, UserEntity user, List<TagEntity> tags) {
-        final QuestionEntity question = new QuestionEntity(title, body, user, tags);
+    private QuestionEntity createQuestion(String body, UserEntity user, List<TagEntity> tags) {
+        final QuestionEntity question = new QuestionEntity(body, user, tags);
         questionDao.save(question);
         return question;
     }
