@@ -74,6 +74,18 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public List<Question> getByUserSubscription() {
+        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
+        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+
+        final List<TagEntity> tags = currentUserEntity.getSubscriptionTags();
+
+        return questionDao.getByTags(tags).stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public QuestionWithComments createNewQuestion(Question question) {
         final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
