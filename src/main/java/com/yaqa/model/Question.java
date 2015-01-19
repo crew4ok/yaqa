@@ -1,6 +1,7 @@
 package com.yaqa.model;
 
 import com.yaqa.dao.entity.QuestionEntity;
+import com.yaqa.dao.entity.UserEntity;
 import org.joda.time.LocalDateTime;
 
 import java.util.List;
@@ -12,31 +13,38 @@ public class Question {
     private final LocalDateTime creationDate;
     private final User author;
     private final Integer likesCount;
+    private final LikeResult.Type likeType;
     private final Integer commentsCount;
     private final List<Tag> tags;
 
-    public static Question of(QuestionEntity questionEntity) {
+    public static Question of(QuestionEntity questionEntity, UserEntity currentUser) {
+        boolean likedByCurrentUser = questionEntity.getLikes()
+                .stream()
+                .anyMatch(l -> l.getLiker().getId().equals(currentUser.getId()));
+
         return new Question(
                 questionEntity.getId(),
                 questionEntity.getBody(),
                 questionEntity.getCreationDate(),
                 User.of(questionEntity.getAuthor()),
                 questionEntity.getLikes().size(),
+                likedByCurrentUser ? LikeResult.Type.LIKE : LikeResult.Type.DISLIKE,
                 questionEntity.getComments().size(),
                 questionEntity.getTags().stream().map(Tag::of).collect(Collectors.toList())
         );
     }
 
     public Question(String body, List<Tag> tags) {
-        this(null, body, null, null, null, null, tags);
+        this(null, body, null, null, null, null, null, tags);
     }
 
-    public Question(Long id, String body, LocalDateTime creationDate, User author, Integer likesCount, Integer commentsCount, List<Tag> tags) {
+    public Question(Long id, String body, LocalDateTime creationDate, User author, Integer likesCount, LikeResult.Type likeType, Integer commentsCount, List<Tag> tags) {
         this.id = id;
         this.body = body;
         this.creationDate = creationDate;
         this.author = author;
         this.likesCount = likesCount;
+        this.likeType = likeType;
         this.commentsCount = commentsCount;
         this.tags = tags;
     }
@@ -67,5 +75,9 @@ public class Question {
 
     public Integer getCommentsCount() {
         return commentsCount;
+    }
+
+    public LikeResult.Type getLikeType() {
+        return likeType;
     }
 }

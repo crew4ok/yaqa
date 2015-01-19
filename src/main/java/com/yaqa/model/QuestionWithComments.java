@@ -1,6 +1,7 @@
 package com.yaqa.model;
 
 import com.yaqa.dao.entity.QuestionEntity;
+import com.yaqa.dao.entity.UserEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,10 +10,13 @@ public class QuestionWithComments {
     private final Question question;
     private final List<Comment> comments;
 
-    public static QuestionWithComments of(QuestionEntity questionEntity) {
+    public static QuestionWithComments of(QuestionEntity questionEntity, UserEntity currentUser) {
         return new QuestionWithComments(
-                Question.of(questionEntity),
-                questionEntity.getComments().stream().map(Comment::of).collect(Collectors.toList())
+                Question.of(questionEntity, currentUser),
+                questionEntity.getComments()
+                        .stream()
+                        .map(c -> Comment.of(c, currentUser))
+                        .collect(Collectors.toList())
         );
     }
 

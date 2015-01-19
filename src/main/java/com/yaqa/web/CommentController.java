@@ -35,7 +35,7 @@ public class CommentController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.editComment(commentId, new Comment(null, postCommentRequest.getBody(), null, null, null));
+        return questionService.editComment(commentId, new Comment(null, postCommentRequest.getBody(), null, null, null, null));
     }
 
     @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)

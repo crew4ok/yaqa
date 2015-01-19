@@ -52,42 +52,42 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getAll() {
         return questionDao.getAll().stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, getCurrentUser()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Question getById(Long id) {
-        return Question.of(questionDao.getById(id));
+        return Question.of(questionDao.getById(id), getCurrentUser());
     }
 
     @Override
     public QuestionWithComments getByIdWithComments(Long id) {
-        return QuestionWithComments.of(questionDao.getById(id));
+        return QuestionWithComments.of(questionDao.getById(id), getCurrentUser());
     }
 
     @Override
     public List<Question> getByTagName(String tagName) {
         return questionDao.getByTagName(tagName).stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, getCurrentUser()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Question> getByUserSubscription() {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
-        final List<TagEntity> tags = currentUserEntity.getSubscriptionTags();
+        final List<TagEntity> tags = currentUser.getSubscriptionTags();
 
         return questionDao.getByTags(tags).stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, currentUser))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public QuestionWithComments createNewQuestion(Question question) {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
         final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(question.getTags());
         final List<Tag> notExistingTags = question.getTags()
@@ -105,46 +105,46 @@ public class QuestionServiceImpl implements QuestionService {
         newTagEntities.addAll(existingEntities.values());
         final QuestionEntity questionEntity = new QuestionEntity(
                 question.getBody(),
-                currentUserEntity,
+                currentUser,
                 newTagEntities
         );
 
         questionDao.save(questionEntity);
 
-        return QuestionWithComments.of(questionEntity);
+        return QuestionWithComments.of(questionEntity, currentUser);
     }
 
     @Override
     @Transactional
     public QuestionWithComments postComment(Long questionId, Comment comment) {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
         final QuestionEntity questionEntity = questionDao.getById(questionId);
 
-        final CommentEntity commentEntity = new CommentEntity(comment.getBody(), currentUserEntity, questionEntity);
+        final CommentEntity commentEntity = new CommentEntity(comment.getBody(), currentUser, questionEntity);
 
         questionEntity.getComments().add(commentEntity);
         questionDao.merge(questionEntity);
         commentDao.save(commentEntity);
 
-        return QuestionWithComments.of(questionEntity);
+        return QuestionWithComments.of(questionEntity, currentUser);
     }
 
     @Override
     @Transactional
     public QuestionWithComments editComment(Long commentId, Comment comment) {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
         final CommentEntity commentEntity = commentDao.getById(commentId);
 
-        if (!commentEntity.getAuthor().equals(currentUserEntity)) {
+        if (!commentEntity.getAuthor().equals(currentUser)) {
             throw new NotAnAuthorException();
         }
 
         commentEntity.setBody(comment.getBody());
         commentDao.merge(commentEntity);
 
-        return QuestionWithComments.of(commentEntity.getQuestion());
+        return QuestionWithComments.of(commentEntity.getQuestion(), currentUser);
     }
 
     @Override
@@ -154,13 +154,15 @@ public class QuestionServiceImpl implements QuestionService {
 
         final QuestionEntity question = questionDao.getById(id);
 
-        final long userQuestionLikes = currentUserEntity.getLikes()
+        final boolean currentUserLiked = currentUserEntity.getLikes()
                 .stream()
-                .filter(l -> l.getQuestion().getId().equals(id))
-                .count();
+                .anyMatch(l -> {
+                    QuestionEntity q = l.getQuestion();
+                    return q != null && q.getId().equals(id);
+                });
 
         LikeResult.Type likeType = LikeResult.Type.LIKE;
-        if (userQuestionLikes == 0) {
+        if (!currentUserLiked) {
             likeQuestion(question, currentUserEntity);
         } else {
             dislikeQuestion(question, currentUserEntity);
@@ -172,9 +174,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getLastLimited(int limit) {
+
         return questionDao.getLastLimited(limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, getCurrentUser()))
                 .collect(Collectors.toList());
     }
 
@@ -182,7 +185,7 @@ public class QuestionServiceImpl implements QuestionService {
     public List<Question> getBelowIdLimited(Long lastId, int limit) {
         return questionDao.getBelowIdLimited(lastId, limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, getCurrentUser()))
                 .collect(Collectors.toList());
     }
 
@@ -192,27 +195,27 @@ public class QuestionServiceImpl implements QuestionService {
 
         return questionDao.getByAuthorLimited(currentUserEntity, limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, currentUserEntity))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Question> getUserQuestionsLimited(Long lastId, int limit) {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
-        return questionDao.getByAuthorLimited(currentUserEntity, lastId, limit)
+        return questionDao.getByAuthorLimited(currentUser, lastId, limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, currentUser))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Question> getCommentedByCurrentUserLimited(int limit) {
-        final UserEntity currentUserEntity = getCurrentUser();
+        final UserEntity currentUser = getCurrentUser();
 
-        return questionDao.getCommentedByAuthorLimited(currentUserEntity, limit)
+        return questionDao.getCommentedByAuthorLimited(currentUser, limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, currentUser))
                 .collect(Collectors.toList());
     }
 
@@ -222,7 +225,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         return questionDao.getCommentedByAuthorLimited(currentUser, lastId, limit)
                 .stream()
-                .map(Question::of)
+                .map(q -> Question.of(q, currentUser))
                 .collect(Collectors.toList());
     }
 

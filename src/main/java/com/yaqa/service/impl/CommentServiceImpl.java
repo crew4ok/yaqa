@@ -38,13 +38,15 @@ public class CommentServiceImpl implements CommentService {
 
         final CommentEntity comment = commentDao.getById(commentId);
 
-        final long userCommentLikes = currentUserEntity.getLikes()
+        final boolean likedByCurrentUser = currentUserEntity.getLikes()
                 .stream()
-                .filter(l -> l.getComment().getId().equals(commentId))
-                .count();
+                .anyMatch(l -> {
+                    CommentEntity c = l.getComment();
+                    return c != null && c.getId().equals(commentId);
+                });
 
         LikeResult.Type likeType = LikeResult.Type.LIKE;
-        if (userCommentLikes == 0) {
+        if (!likedByCurrentUser) {
             likeComment(comment, currentUserEntity);
         } else {
             dislikeComment(comment, currentUserEntity);
@@ -65,8 +67,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private void dislikeComment(CommentEntity comment, UserEntity user) {
-        final LikeEntity like = comment.getLikes().stream()
-                .filter(l -> l.getComment().getId().equals(comment.getId()))
+        final LikeEntity like = comment.getLikes()
+                .stream()
+                .filter(l -> {
+                    CommentEntity c = l.getComment();
+                    return c != null && c.getId().equals(comment.getId());
+                })
                 .findFirst()
                 .get();
 
