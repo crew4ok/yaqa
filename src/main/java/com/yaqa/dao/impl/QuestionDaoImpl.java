@@ -3,6 +3,7 @@ package com.yaqa.dao.impl;
 import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.TagEntity;
+import com.yaqa.dao.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -67,6 +68,62 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
                 QuestionEntity.class)
                 .setParameter("lastId", lastId)
                 .setMaxResults(limited)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getByAuthorLimited(UserEntity author, int limit) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " where q.author = :author " +
+                        " order by q.id desc ",
+                QuestionEntity.class)
+                .setParameter("author", author)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getByAuthorLimited(UserEntity author, Long lastId, int limit) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " where q.author = :author " +
+                        " and q.id < :lastId " +
+                        " order by q.id desc ",
+                QuestionEntity.class)
+                .setParameter("author", author)
+                .setParameter("lastId", lastId)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getCommentedByAuthorLimited(UserEntity author, int limit) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " inner join q.comments c " +
+                        " where c.author = :author " +
+                        " group by q.id " +
+                        " order by q.id desc ",
+                QuestionEntity.class)
+                .setParameter("author", author)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getCommentedByAuthorLimited(UserEntity author, Long lastId, int limit) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " inner join q.comments c " +
+                        " where c.author = :author " +
+                        " and q.id < :lastId " +
+                        " group by q.id " +
+                        " order by q.id desc",
+                QuestionEntity.class)
+                .setParameter("author", author)
+                .setParameter("lastId", lastId)
+                .setMaxResults(limit)
                 .getResultList();
     }
 }

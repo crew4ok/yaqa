@@ -75,8 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getByUserSubscription() {
-        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
-        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+        final UserEntity currentUserEntity = getCurrentUser();
 
         final List<TagEntity> tags = currentUserEntity.getSubscriptionTags();
 
@@ -88,8 +87,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionWithComments createNewQuestion(Question question) {
-        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
-        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+        final UserEntity currentUserEntity = getCurrentUser();
 
         final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(question.getTags());
         final List<Tag> notExistingTags = question.getTags()
@@ -119,8 +117,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionWithComments postComment(Long questionId, Comment comment) {
-        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
-        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+        final UserEntity currentUserEntity = getCurrentUser();
 
         final QuestionEntity questionEntity = questionDao.getById(questionId);
 
@@ -136,8 +133,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionWithComments editComment(Long commentId, Comment comment) {
-        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
-        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+        final UserEntity currentUserEntity = getCurrentUser();
 
         final CommentEntity commentEntity = commentDao.getById(commentId);
 
@@ -154,8 +150,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public LikeResult likeQuestion(Long id) {
-        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
-        final UserEntity currentUserEntity = userDao.getById(currentAuthenticatedUser.getId());
+        final UserEntity currentUserEntity = getCurrentUser();
 
         final QuestionEntity question = questionDao.getById(id);
 
@@ -189,6 +184,51 @@ public class QuestionServiceImpl implements QuestionService {
                 .stream()
                 .map(Question::of)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getUserQuestionsLimited(int limit) {
+        final UserEntity currentUserEntity = getCurrentUser();
+
+        return questionDao.getByAuthorLimited(currentUserEntity, limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getUserQuestionsLimited(Long lastId, int limit) {
+        final UserEntity currentUserEntity = getCurrentUser();
+
+        return questionDao.getByAuthorLimited(currentUserEntity, lastId, limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getCommentedByCurrentUserLimited(int limit) {
+        final UserEntity currentUserEntity = getCurrentUser();
+
+        return questionDao.getCommentedByAuthorLimited(currentUserEntity, limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getCommentedByCurrentUserLimited(Long lastId, int limit) {
+        final UserEntity currentUser = getCurrentUser();
+
+        return questionDao.getCommentedByAuthorLimited(currentUser, lastId, limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    private UserEntity getCurrentUser() {
+        final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
+        return userDao.getById(currentAuthenticatedUser.getId());
     }
 
     private void likeQuestion(QuestionEntity question, UserEntity currentUserEntity) {

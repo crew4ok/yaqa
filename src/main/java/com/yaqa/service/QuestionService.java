@@ -30,4 +30,12 @@ public interface QuestionService {
     List<Question> getLastLimited(int limit);
 
     List<Question> getBelowIdLimited(Long lastId, int limit);
+
+    List<Question> getUserQuestionsLimited(int limit);
+
+    List<Question> getUserQuestionsLimited(Long lastId, int limit);
+
+    List<Question> getCommentedByCurrentUserLimited(int limit);
+
+    List<Question> getCommentedByCurrentUserLimited(Long lastId, int limit);
 }

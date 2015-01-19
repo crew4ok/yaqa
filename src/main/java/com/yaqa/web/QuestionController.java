@@ -90,4 +90,24 @@ public class QuestionController {
     public List<Question> getQuestionsBySubscription() {
         return questionService.getByUserSubscription();
     }
+
+    @RequestMapping(value = "/mine", method = RequestMethod.GET)
+    public List<Question> getUserQuestions() {
+        return questionService.getUserQuestionsLimited(QUESTION_PAGINATION_LIMIT);
+    }
+
+    @RequestMapping(value = "/mine/{id}", method = RequestMethod.GET)
+    public List<Question> getUserQuestionsBelowId(@PathVariable("id") Long id) {
+        return questionService.getUserQuestionsLimited(id, QUESTION_PAGINATION_LIMIT);
+    }
+
+    @RequestMapping(value = "/commented", method = RequestMethod.GET)
+    public List<Question> getUserCommented() {
+        return questionService.getCommentedByCurrentUserLimited(QUESTION_PAGINATION_LIMIT);
+    }
+
+    @RequestMapping(value = "/commented/{id}", method = RequestMethod.GET)
+    public List<Question> getUserCommentBelowId(@PathVariable("id") Long lastId) {
+        return questionService.getCommentedByCurrentUserLimited(lastId, QUESTION_PAGINATION_LIMIT);
+    }
 }
