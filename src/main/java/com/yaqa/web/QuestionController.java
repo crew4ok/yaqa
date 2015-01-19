@@ -5,7 +5,6 @@ import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
-import com.yaqa.model.Tag;
 import com.yaqa.service.QuestionService;
 import com.yaqa.web.model.CreateQuestionRequest;
 import com.yaqa.web.model.PostCommentRequest;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/question")
@@ -55,18 +53,13 @@ public class QuestionController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public QuestionWithComments createQuestion(@Valid @RequestBody CreateQuestionRequest questionRequest,
+    public QuestionWithComments createQuestion(@Valid @RequestBody CreateQuestionRequest request,
                                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        final List<Tag> tags = questionRequest.getTags()
-                .stream()
-                .map(t -> new Tag(null, t.getTagName()))
-                .collect(Collectors.toList());
-
-        final Question question = new Question(questionRequest.getBody(), tags);
+        final Question question = new Question(request.getBody(), request.getTags());
         return questionService.createNewQuestion(question);
     }
 
