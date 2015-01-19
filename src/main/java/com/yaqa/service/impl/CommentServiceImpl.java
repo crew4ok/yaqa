@@ -57,9 +57,11 @@ public class CommentServiceImpl implements CommentService {
     private void likeComment(CommentEntity comment, UserEntity user) {
         final LikeEntity like = new LikeEntity(user, comment);
         comment.getLikes().add(like);
+        user.getLikes().add(like);
 
         commentDao.merge(comment);
         likeDao.save(like);
+        userDao.merge(user);
     }
 
     private void dislikeComment(CommentEntity comment, UserEntity user) {
@@ -69,6 +71,8 @@ public class CommentServiceImpl implements CommentService {
                 .get();
 
         like.getComment().getLikes().remove(like);
+        user.getLikes().remove(like);
         likeDao.remove(like);
+        userDao.merge(user);
     }
 }
