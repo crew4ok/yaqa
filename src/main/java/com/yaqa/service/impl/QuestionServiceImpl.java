@@ -175,6 +175,22 @@ public class QuestionServiceImpl implements QuestionService {
         return new LikeResult(questionDao.getLikeCount(question), likeType);
     }
 
+    @Override
+    public List<Question> getLastLimited(int limit) {
+        return questionDao.getLastLimited(limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getBelowIdLimited(Long lastId, int limit) {
+        return questionDao.getBelowIdLimited(lastId, limit)
+                .stream()
+                .map(Question::of)
+                .collect(Collectors.toList());
+    }
+
     private void likeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
         final LikeEntity like = new LikeEntity(currentUserEntity, question);
         question.getLikes().add(like);

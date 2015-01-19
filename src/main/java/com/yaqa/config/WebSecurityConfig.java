@@ -1,5 +1,8 @@
 package com.yaqa.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yaqa.model.User;
+import com.yaqa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,11 +10,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration
 @EnableWebMvcSecurity
@@ -49,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .formLogin()
-                .successHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_OK))
+                .successHandler(successHandler())
                 .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
@@ -60,5 +68,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    private static class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+        private static final ObjectMapper om = new ObjectMapper();
+
+        @Autowired
+        private UserService userService;
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                            Authentication authentication) throws IOException, ServletException {
+            final User currentUser = userService.getCurrentAuthenticatedUser();
+            response.getWriter().write(om.writeValueAsString(currentUser));
+        }
+    }
 
 }
