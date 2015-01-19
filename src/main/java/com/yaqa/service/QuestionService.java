@@ -26,4 +26,8 @@ public interface QuestionService {
     QuestionWithComments editComment(Long commentId, Comment comment);
 
     LikeResult likeQuestion(Long id);
+
+    List<Question> getLastLimited(int limit);
+
+    List<Question> getBelowIdLimited(Long lastId, int limit);
 }

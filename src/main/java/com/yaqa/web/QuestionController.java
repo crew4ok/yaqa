@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/question")
 public class QuestionController {
+    private static final int QUESTION_PAGINATION_LIMIT = 10;
 
     @Autowired
     private QuestionService questionService;
@@ -31,6 +32,16 @@ public class QuestionController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Question> getAllQuestions() {
         return questionService.getAll();
+    }
+
+    @RequestMapping(value = "/paginated", method = RequestMethod.GET)
+    public List<Question> getLastTenQuestions() {
+        return questionService.getLastLimited(QUESTION_PAGINATION_LIMIT);
+    }
+
+    @RequestMapping(value = "/paginated/{lastId}", method = RequestMethod.GET)
+    public List<Question> getQuestionsBelowId(@PathVariable("lastId") Long pastId) {
+        return questionService.getBelowIdLimited(pastId, QUESTION_PAGINATION_LIMIT);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

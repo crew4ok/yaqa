@@ -47,4 +47,26 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
                 .setParameter("tags", tags)
                 .getResultList();
     }
+
+    @Override
+    public List<QuestionEntity> getLastLimited(int limit) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " order by q.id desc ",
+                QuestionEntity.class)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getBelowIdLimited(Long lastId, int limited) {
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " where q.id < :lastId " +
+                        " order by q.id desc ",
+                QuestionEntity.class)
+                .setParameter("lastId", lastId)
+                .setMaxResults(limited)
+                .getResultList();
+    }
 }

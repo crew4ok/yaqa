@@ -11,4 +11,8 @@ public interface QuestionDao extends GenericDao<QuestionEntity> {
     Long getLikeCount(QuestionEntity question);
 
     List<QuestionEntity> getByTags(List<TagEntity> tags);
+
+    List<QuestionEntity> getLastLimited(int limit);
+
+    List<QuestionEntity> getBelowIdLimited(Long lastId, int limited);
 }
