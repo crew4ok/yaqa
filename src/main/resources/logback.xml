@@ -6,11 +6,13 @@
         </encoder>
     </appender>
 
+<!--
     <logger name="org.springframework" level="INFO"/>
     <logger name="io.undertow" level="INFO"/>
     <logger name="org.hibernate.SQL" level="info"/>
+-->
 
-    <root level="warn">
+    <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
