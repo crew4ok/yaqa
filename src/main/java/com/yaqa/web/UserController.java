@@ -1,7 +1,7 @@
 package com.yaqa.web;
 
 import com.yaqa.exception.ValidationException;
-import com.yaqa.model.User;
+import com.yaqa.model.UserWithTags;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.UpdateUserProfileRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable("id") Long userId) {
+    public UserWithTags getUserById(@PathVariable("id") Long userId) {
         return userService.getById(userId);
     }
 
     @RequestMapping(method = RequestMethod.PATCH)
-    public User updateUserProfile(@Valid @RequestBody UpdateUserProfileRequest request,
+    public UserWithTags updateUserProfile(@Valid @RequestBody UpdateUserProfileRequest request,
                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

@@ -8,6 +8,7 @@ import com.yaqa.exception.InvalidTagException;
 import com.yaqa.exception.NotUniqueUsernameException;
 import com.yaqa.model.Tag;
 import com.yaqa.model.User;
+import com.yaqa.model.UserWithTags;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.RegistrationRequest;
 import com.yaqa.web.model.UpdateUserProfileRequest;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(UpdateUserProfileRequest request) {
+    public UserWithTags updateUser(UpdateUserProfileRequest request) {
         final User currentUser = getCurrentAuthenticatedUser();
         final UserEntity user = userDao.getById(currentUser.getId());
 
@@ -114,7 +115,7 @@ public class UserServiceImpl implements UserService {
 
         userDao.save(user);
 
-        return User.of(user);
+        return UserWithTags.of(user);
     }
 
     @Override
@@ -127,7 +128,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long userId) {
-        return User.of(userDao.getById(userId));
+    public UserWithTags getById(Long userId) {
+        return UserWithTags.of(userDao.getById(userId));
     }
 }
