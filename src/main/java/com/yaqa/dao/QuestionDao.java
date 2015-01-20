@@ -1,7 +1,6 @@
 package com.yaqa.dao;
 
 import com.yaqa.dao.entity.QuestionEntity;
-import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 
 import java.util.List;
@@ -11,7 +10,9 @@ public interface QuestionDao extends GenericDao<QuestionEntity> {
 
     Long getLikeCount(QuestionEntity question);
 
-    List<QuestionEntity> getByTags(List<TagEntity> tags);
+    List<QuestionEntity> getByUserTagsLimited(UserEntity author, int limit);
+
+    List<QuestionEntity> getByUserTagsLimited(UserEntity author, Long lastId, int limit);
 
     List<QuestionEntity> getLastLimited(int limit);
 

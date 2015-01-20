@@ -17,8 +17,6 @@ public interface QuestionService {
 
     List<Question> getByTagName(String tagName);
 
-    List<Question> getByUserSubscription();
-
     QuestionWithComments createNewQuestion(Question question);
 
     QuestionWithComments postComment(Long questionId, Comment comment);
@@ -38,4 +36,8 @@ public interface QuestionService {
     List<Question> getCommentedByCurrentUserLimited(int limit);
 
     List<Question> getCommentedByCurrentUserLimited(Long lastId, int limit);
+
+    List<Question> getUserSubscriptionLimited(int limit);
+
+    List<Question> getUserSubscriptionLimited(Long lastId, int limit);
 }

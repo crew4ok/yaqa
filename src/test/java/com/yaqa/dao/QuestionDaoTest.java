@@ -56,7 +56,7 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
                 createQuestion("body", user, tags.subList(1, 3))
         );
 
-        final List<QuestionEntity> actualQuestions = questionDao.getByTags(tags);
+        final List<QuestionEntity> actualQuestions = questionDao.getByUserTagsLimited(user, Integer.MAX_VALUE);
 
         final Comparator<QuestionEntity> comparator = (q1, q2) -> q1.getId().compareTo(q2.getId());
         questions.sort(comparator);

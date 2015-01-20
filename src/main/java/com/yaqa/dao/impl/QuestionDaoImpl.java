@@ -2,10 +2,10 @@ package com.yaqa.dao.impl;
 
 import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.entity.QuestionEntity;
-import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -38,14 +38,44 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
     }
 
     @Override
-    public List<QuestionEntity> getByTags(List<TagEntity> tags) {
+    public List<QuestionEntity> getByUserTagsLimited(UserEntity author, int limit) {
+        if (author.getSubscriptionTags().isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return em.createQuery("select q " +
                         " from QuestionEntity q " +
                         " inner join q.tags as t " +
                         " where t in :tags " +
-                        " group by q.id",
+                        " and q.author = :author " +
+                        " group by q.id " +
+                        " order by q.id ",
                 QuestionEntity.class)
-                .setParameter("tags", tags)
+                .setParameter("tags", author.getSubscriptionTags())
+                .setParameter("author", author)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    @Override
+    public List<QuestionEntity> getByUserTagsLimited(UserEntity author, Long lastId, int limit) {
+        if (author.getSubscriptionTags().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return em.createQuery("select q " +
+                        " from QuestionEntity q " +
+                        " inner join q.tags as t " +
+                        " where t in :tags " +
+                        " and q.author = :author " +
+                        " and q.id < :lastId " +
+                        " group by q.id " +
+                        " order by q.id",
+                QuestionEntity.class)
+                .setParameter("tags", author.getSubscriptionTags())
+                .setParameter("author", author)
+                .setParameter("lastId", lastId)
+                .setMaxResults(limit)
                 .getResultList();
     }
 

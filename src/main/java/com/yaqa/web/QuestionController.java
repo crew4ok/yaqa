@@ -81,7 +81,12 @@ public class QuestionController {
 
     @RequestMapping(value = "/subscription", method = RequestMethod.GET)
     public List<Question> getQuestionsBySubscription() {
-        return questionService.getByUserSubscription();
+        return questionService.getUserSubscriptionLimited(QUESTION_PAGINATION_LIMIT);
+    }
+
+    @RequestMapping(value = "/subscription/{id}", method = RequestMethod.GET)
+    public List<Question> getQuestionsBySubscriptionBelowId(@PathVariable("id") Long lastId) {
+        return questionService.getUserSubscriptionLimited(lastId, QUESTION_PAGINATION_LIMIT);
     }
 
     @RequestMapping(value = "/mine", method = RequestMethod.GET)

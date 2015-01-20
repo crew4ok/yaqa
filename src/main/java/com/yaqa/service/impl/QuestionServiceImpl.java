@@ -74,17 +74,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getByUserSubscription() {
-        final UserEntity currentUser = getCurrentUser();
-
-        final List<TagEntity> tags = currentUser.getSubscriptionTags();
-
-        return questionDao.getByTags(tags).stream()
-                .map(q -> Question.of(q, currentUser))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     @Transactional
     public QuestionWithComments createNewQuestion(Question question) {
         final UserEntity currentUser = getCurrentUser();
@@ -172,6 +161,28 @@ public class QuestionServiceImpl implements QuestionService {
         return new LikeResult(questionDao.getLikeCount(question), likeType);
     }
 
+    private void likeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
+        final LikeEntity like = new LikeEntity(currentUserEntity, question);
+        question.getLikes().add(like);
+
+        questionDao.merge(question);
+        likeDao.save(like);
+    }
+
+    private void dislikeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
+        final Map<Boolean, List<LikeEntity>> partitionedLikes = question.getLikes()
+                .stream()
+                .collect(Collectors.partitioningBy(l -> l.getLiker().equals(currentUserEntity)));
+
+        final List<LikeEntity> likesToRemove = partitionedLikes.get(true);
+        final List<LikeEntity> likesToRetain = partitionedLikes.get(false);
+
+        question.setLikes(likesToRetain);
+        questionDao.merge(question);
+        likesToRemove.forEach(likeDao::remove);
+    }
+
+
     @Override
     public List<Question> getLastLimited(int limit) {
 
@@ -229,29 +240,29 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Question> getUserSubscriptionLimited(int limit) {
+        final UserEntity currentUser = getCurrentUser();
+
+        return questionDao.getByUserTagsLimited(currentUser, limit)
+                .stream()
+                .map(q -> Question.of(q, currentUser))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> getUserSubscriptionLimited(Long lastId, int limit) {
+        final UserEntity currentUser = getCurrentUser();
+        final List<TagEntity> userTags = currentUser.getSubscriptionTags();
+
+        return questionDao.getByUserTagsLimited(currentUser, lastId, limit)
+                .stream()
+                .map(q -> Question.of(q, currentUser))
+                .collect(Collectors.toList());
+    }
+
     private UserEntity getCurrentUser() {
         final User currentAuthenticatedUser = userService.getCurrentAuthenticatedUser();
         return userDao.getById(currentAuthenticatedUser.getId());
-    }
-
-    private void likeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
-        final LikeEntity like = new LikeEntity(currentUserEntity, question);
-        question.getLikes().add(like);
-
-        questionDao.merge(question);
-        likeDao.save(like);
-    }
-
-    private void dislikeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
-        final Map<Boolean, List<LikeEntity>> partitionedLikes = question.getLikes()
-                .stream()
-                .collect(Collectors.partitioningBy(l -> l.getLiker().equals(currentUserEntity)));
-
-        final List<LikeEntity> likesToRemove = partitionedLikes.get(true);
-        final List<LikeEntity> likesToRetain = partitionedLikes.get(false);
-
-        question.setLikes(likesToRetain);
-        questionDao.merge(question);
-        likesToRemove.forEach(likeDao::remove);
     }
 }
