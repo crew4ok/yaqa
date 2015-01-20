@@ -137,6 +137,13 @@ public class DaoConfig {
 
     @Bean
     public DataSource dataSource() {
+        // a little hack to help DriverManager to load proper driver from classpath
+        try {
+            Class.forName("org.postgresql.ds.PGSimpleDataSource");
+        } catch (ClassNotFoundException e) {
+            // NOP
+        }
+
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(dbUrl);
         config.setUsername(dbUsername);
