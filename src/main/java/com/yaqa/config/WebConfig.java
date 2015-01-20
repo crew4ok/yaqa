@@ -10,9 +10,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.yaqa.web")
 @Import({
-        DaoConfig.class,
-        ServiceConfig.class,
-        WebSecurityConfig.class
+    DaoConfig.class,
+    ServiceConfig.class,
+    WebSecurityConfig.class
 })
 @EnableAutoConfiguration
 public class WebConfig {
