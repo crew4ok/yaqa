@@ -12,6 +12,9 @@ public class Bootstrap extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        // FIXME: temporal hack to deploy on jelastic
+        // should be replaced with more generic approach (e.g. JNDI)
+        application.profiles("jelastic");
         return application.sources(WebConfig.class);
     }
 }
