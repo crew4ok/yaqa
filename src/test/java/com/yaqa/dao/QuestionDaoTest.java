@@ -1,14 +1,11 @@
 package com.yaqa.dao;
 
-import com.yaqa.config.DaoConfig;
+import com.yaqa.config.TestDaoConfig;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,9 +15,7 @@ import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-@Test
-@ContextConfiguration(classes = DaoConfig.class)
-@ActiveProfiles("test")
+@TestDaoConfig
 public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired

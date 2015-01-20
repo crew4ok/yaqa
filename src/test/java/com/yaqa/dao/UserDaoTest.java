@@ -1,17 +1,14 @@
 package com.yaqa.dao;
 
-import com.yaqa.config.DaoConfig;
+import com.yaqa.config.TestDaoConfig;
 import com.yaqa.dao.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
-@Test
-@ContextConfiguration(classes = DaoConfig.class)
+@TestDaoConfig
 public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
