@@ -22,10 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -101,11 +101,7 @@ public class UserServiceImpl implements UserService {
             }
 
             final Collection<TagEntity> tags = foundEntities.values();
-            final List<TagEntity> tagsToAttach = tags.stream()
-                    .filter(t -> !user.getSubscriptionTags().contains(t))
-                    .collect(Collectors.toList());
-
-            user.getSubscriptionTags().addAll(tagsToAttach);
+            user.setSubscriptionTags(new ArrayList<>(tags));
         }
 
         // update profile image
