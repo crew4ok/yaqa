@@ -1,13 +1,10 @@
 package com.yaqa.dao.entity;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -35,8 +32,6 @@ public class UserEntity {
 
     private String email;
 
-    @Lob
-    @Type(type = "org.hibernate.type.TextType")
     private String profileImage;
 
     @OneToMany(mappedBy = "author")
