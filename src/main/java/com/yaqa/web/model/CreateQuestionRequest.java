@@ -10,10 +10,7 @@ import java.util.List;
 public class CreateQuestionRequest {
     @NotNull
     private final String body;
-
-    @NotNull
     private final List<Tag> tags;
-
     private final List<String> images;
 
     @JsonCreator

@@ -85,29 +85,42 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionWithComments createNewQuestion(CreateQuestionRequest request) {
         final UserEntity currentUser = getCurrentUser();
 
-        final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(request.getTags());
-        final List<Tag> notExistingTags = request.getTags()
-                .stream()
-                .filter(t -> !existingEntities.keySet().contains(t))
-                .collect(Collectors.toList());
+        // extract question tags
+        List<TagEntity> questionTags = new ArrayList<>();
+        if (request.getTags() != null && !request.getTags().isEmpty()) {
+            final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(request.getTags());
+            final List<Tag> notExistingTags = request.getTags()
+                    .stream()
+                    .filter(t -> !existingEntities.keySet().contains(t))
+                    .collect(Collectors.toList());
 
-        final List<ImageEntity> images = request.getImages()
-                .stream()
-                .map(imageService::saveImage)
-                .collect(Collectors.toList());
+            final List<TagEntity> newTagEntities = notExistingTags.stream()
+                    .map(t -> {
+                        TagEntity tagEntity = new TagEntity(t.getTagName());
+                        tagDao.save(tagEntity);
+                        return tagEntity;
+                    }).collect(Collectors.toList());
 
-        final List<TagEntity> newTagEntities = notExistingTags.stream()
-                .map(t -> {
-                    TagEntity tagEntity = new TagEntity(t.getTagName());
-                    tagDao.save(tagEntity);
-                    return tagEntity;
-                }).collect(Collectors.toList());
+            questionTags.addAll(newTagEntities);
+            questionTags.addAll(existingEntities.values());
+        }
 
-        newTagEntities.addAll(existingEntities.values());
+        // extract question images
+        List<ImageEntity> images = new ArrayList<>();
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            images.addAll(
+                    request.getImages()
+                            .stream()
+                            .map(imageService::saveImage)
+                            .collect(Collectors.toList())
+            );
+
+        }
+
         final QuestionEntity questionEntity = new QuestionEntity(
                 request.getBody(),
                 currentUser,
-                newTagEntities,
+                questionTags,
                 images
         );
 
