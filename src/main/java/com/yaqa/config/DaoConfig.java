@@ -166,6 +166,7 @@ public class DaoConfig {
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("show_sql", "true");
         jpaProperties.setProperty("format_sql", "true");
+        jpaProperties.setProperty("hibernate.hbm2ddl.auto", "update");
         factory.setJpaProperties(jpaProperties);
 
         return factory;
