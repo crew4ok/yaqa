@@ -32,7 +32,7 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
         final String secondTagName = "tag2";
 
         final QuestionEntity question = new QuestionEntity("body", createUser(),
-                Arrays.asList(createTag(firstTagName), createTag(secondTagName)));
+                Arrays.asList(createTag(firstTagName), createTag(secondTagName)), null);
 
         questionDao.save(question);
 
@@ -66,7 +66,7 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
     }
 
     private QuestionEntity createQuestion(String body, UserEntity user, List<TagEntity> tags) {
-        final QuestionEntity question = new QuestionEntity(body, user, tags);
+        final QuestionEntity question = new QuestionEntity(body, user, tags, null);
         questionDao.save(question);
         return question;
     }
