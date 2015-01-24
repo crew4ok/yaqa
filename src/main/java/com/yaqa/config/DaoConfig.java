@@ -1,15 +1,20 @@
 package com.yaqa.config;
 
+import com.yaqa.config.env.HerokuDatabaseConfig;
+import com.yaqa.config.env.JelasticDatabaseConfig;
+import com.yaqa.config.env.LocalDatabaseConfig;
+import com.yaqa.config.env.TestDatabaseConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -17,111 +22,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.yaqa.dao")
+@Import(value = {
+        HerokuDatabaseConfig.class,
+        JelasticDatabaseConfig.class,
+        LocalDatabaseConfig.class,
+        TestDatabaseConfig.class
+})
 @DependsOn({"dbUrl", "dbUsername", "dbPassword"})
 public class DaoConfig {
-
-    @Configuration
-    @Profile("heroku")
-    public static class HerokuDatabaseConfig {
-        @Value("#{ systemEnvironment['DATABASE_URL'] }")
-        private String databaseUrl;
-
-        @Bean(name = "dbUsername")
-        public String dbUsername() {
-            // TODO: rewrite (e.g. with regexp)
-            return databaseUrl.split("//")[1].split(":")[0];
-        }
-
-        @Bean(name = "dbPassword")
-        public String dbPassword() {
-            // TODO: rewrite (e.g. with regexp)
-            return databaseUrl.split("//")[1].split(":")[1].split("@")[0];
-        }
-
-        @Bean(name = "dbUrl")
-        public String dbUrl() {
-            return "jdbc:postgresql://" + databaseUrl.split("@")[1];
-        }
-    }
-
-    @Configuration
-    @Profile("local")
-    public static class LocalDatabaseConfig {
-        @Bean(name = "dbUsername")
-        public String dbUsername() {
-            return "yaqa";
-        }
-
-        @Bean(name = "dbPassword")
-        public String dbPassword() {
-            return "yaqa";
-        }
-
-        @Bean(name = "dbUrl")
-        public String dbUrl() {
-            return "jdbc:postgresql://localhost:5432/yaqa";
-        }
-    }
-
-    @Configuration
-    @Profile("test")
-    public static class TestDatabaseConfig {
-
-        @Bean(name = "dbUrl")
-        public String dbUrl() {
-            return "jdbc:h2:mem:test";
-        }
-
-        @Bean(name = "dbUsername")
-        public String dbUsername() {
-            return "";
-        }
-
-        @Bean(name = "dbPassword")
-        public String dbPassword() {
-            return "";
-        }
-    }
-
-    @Configuration
-    @Profile("jelastic")
-    public static class JelasticDatabaseConfig {
-        private final Properties properties;
-
-        public JelasticDatabaseConfig() throws IOException {
-            final String userHome = System.getProperty("user.home");
-            final Path path = FileSystems.getDefault().getPath(userHome, "db.properties");
-
-            properties = new Properties();
-            try (FileReader fileReader = new FileReader(path.toFile())) {
-                properties.load(fileReader);
-            }
-        }
-
-        @Bean(name = "dbUrl")
-        public String dbUrl() {
-            return properties.getProperty("db.url");
-        }
-
-        @Bean(name = "dbUsername")
-        public String dbUsername() {
-            return properties.getProperty("db.username");
-        }
-
-        @Bean(name = "dbPassword")
-        public String dbPassword() {
-            return properties.getProperty("db.password");
-        }
-    }
+    private static final Logger log = LoggerFactory.getLogger(DaoConfig.class);
 
     @Autowired
     @Qualifier("dbUsername")
@@ -137,6 +51,7 @@ public class DaoConfig {
 
     @Bean
     public DataSource dataSource() {
+        log.info("DB Url: {}", dbUrl);
         // a little hack to help DriverManager to load proper driver from classpath
         try {
             Class.forName("org.postgresql.ds.PGSimpleDataSource");
