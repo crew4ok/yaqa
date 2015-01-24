@@ -227,18 +227,27 @@
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>javax.el</groupId>
-                    <artifactId>javax.el-api</artifactId>
-                    <version>3.0.0</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-undertow</artifactId>
                     <version>${spring.boot.version}</version>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>
+
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.undertow</groupId>
+                        <artifactId>undertow-core</artifactId>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.glassfish</groupId>
+                                <artifactId>javax.el</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
 
             <build>
                 <plugins>
