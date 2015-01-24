@@ -2,6 +2,7 @@ package com.yaqa.service.impl;
 
 import com.yaqa.dao.TagDao;
 import com.yaqa.dao.UserDao;
+import com.yaqa.dao.entity.ImageEntity;
 import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import com.yaqa.exception.InvalidTagException;
@@ -54,13 +55,18 @@ public class UserServiceImpl implements UserService {
             // if user exists, throw an exception
             throw new NotUniqueUsernameException("Username is not unique");
         } catch (EmptyResultDataAccessException e) {
+            ImageEntity image = null;
+            if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+                image = imageService.saveImage(request.getProfileImage());
+            }
+
             userDao.save(new UserEntity(
                     request.getUsername(),
                     passwordEncoder.encode(request.getPassword()),
                     request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
-                    imageService.saveImage(request.getProfileImage())
+                    image
             ));
         }
     }
