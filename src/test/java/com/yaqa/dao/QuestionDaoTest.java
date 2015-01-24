@@ -82,7 +82,7 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
     }
 
     private UserEntity createUser(List<TagEntity> tags) {
-        final UserEntity user = new UserEntity("username", "password", "firstName", "lastName", "email");
+        final UserEntity user = new UserEntity("username", "password", "firstName", "lastName", "email", null);
         user.setSubscriptionTags(tags);
         userDao.save(user);
         return user;

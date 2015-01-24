@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -35,7 +36,8 @@ public class UserEntity {
 
     private String email;
 
-    private String profileImage;
+    @OneToOne
+    private ImageEntity profileImage;
 
     @OneToMany(mappedBy = "author")
     private List<QuestionEntity> questions;
@@ -58,17 +60,13 @@ public class UserEntity {
      */
     public UserEntity() { }
 
-    public UserEntity(String username, String password, String firstName, String lastName, String email) {
+    public UserEntity(String username, String password, String firstName, String lastName, String email, ImageEntity imageEntity) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    public UserEntity(String username, String password, String firstName, String lastName, String email, String profileImage) {
-        this(username, password, firstName, lastName, email);
-        this.profileImage = profileImage;
+        this.profileImage = imageEntity;
     }
 
     public Long getId() {
@@ -127,11 +125,11 @@ public class UserEntity {
         this.likes = likes;
     }
 
-    public String getProfileImage() {
+    public ImageEntity getProfileImage() {
         return profileImage;
     }
 
-    public void setProfileImage(String profileImage) {
+    public void setProfileImage(ImageEntity profileImage) {
         this.profileImage = profileImage;
     }
 

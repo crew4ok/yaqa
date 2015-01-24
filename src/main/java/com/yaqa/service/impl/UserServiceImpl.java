@@ -9,6 +9,7 @@ import com.yaqa.exception.NotUniqueUsernameException;
 import com.yaqa.model.Tag;
 import com.yaqa.model.User;
 import com.yaqa.model.UserWithTags;
+import com.yaqa.service.ImageService;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.RegistrationRequest;
 import com.yaqa.web.model.UpdateUserProfileRequest;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
     private TagDao tagDao;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -56,7 +60,7 @@ public class UserServiceImpl implements UserService {
                     request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
-                    request.getProfileImage()
+                    imageService.saveImage(request.getProfileImage())
             ));
         }
     }
@@ -106,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
         // update profile image
         if (newProfileImage != null && !newProfileImage.isEmpty()) {
-            user.setProfileImage(newProfileImage);
+            user.setProfileImage(imageService.saveImage(newProfileImage));
         }
 
         userDao.save(user);

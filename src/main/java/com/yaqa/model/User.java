@@ -11,7 +11,7 @@ public class User {
 
     private final String email;
 
-    private final String profileImage;
+    private final Long profileImageId;
 
     public static User of(UserEntity userEntity) {
         return new User(
@@ -20,17 +20,17 @@ public class User {
                 userEntity.getFirstName(),
                 userEntity.getLastName(),
                 userEntity.getEmail(),
-                userEntity.getProfileImage()
+                userEntity.getProfileImage() != null ? userEntity.getProfileImage().getId() : null
         );
     }
 
-    public User(Long id, String username, String firstName, String lastName, String email, String profileImage) {
+    public User(Long id, String username, String firstName, String lastName, String email, Long profileImageId) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.profileImage = profileImage;
+        this.profileImageId = profileImageId;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", profileImage='" + profileImage + '\'' +
+                ", profileImageId='" + profileImageId + '\'' +
                 '}';
     }
 
@@ -53,8 +53,8 @@ public class User {
         return id;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public Long getProfileImageId() {
+        return profileImageId;
     }
 
     public String getFirstName() {
