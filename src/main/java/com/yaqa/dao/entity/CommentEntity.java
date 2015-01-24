@@ -37,7 +37,7 @@ public class CommentEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime creationDate = LocalDateTime.now(DateTimeZone.UTC);
 
-    @OneToMany
+    @OneToMany(mappedBy = "comment")
     private List<ImageEntity> images = new ArrayList<>();
 
     @NotNull

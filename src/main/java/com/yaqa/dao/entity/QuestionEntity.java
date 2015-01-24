@@ -45,7 +45,7 @@ public class QuestionEntity {
     @OneToMany(mappedBy = "question")
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "question")
     private List<ImageEntity> images = new ArrayList<>();
 
     @NotNull

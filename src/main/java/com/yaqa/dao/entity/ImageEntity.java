@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,12 @@ public class ImageEntity {
     @Lob
     @NotNull
     private byte[] content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private QuestionEntity question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CommentEntity comment;
 
     /**
      * Supposed to be used only by hibernate.
