@@ -6,6 +6,7 @@ import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.TagDao;
 import com.yaqa.dao.UserDao;
 import com.yaqa.dao.entity.CommentEntity;
+import com.yaqa.dao.entity.ImageEntity;
 import com.yaqa.dao.entity.LikeEntity;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.TagEntity;
@@ -17,8 +18,10 @@ import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
 import com.yaqa.model.Tag;
 import com.yaqa.model.User;
+import com.yaqa.service.ImageService;
 import com.yaqa.service.QuestionService;
 import com.yaqa.service.UserService;
+import com.yaqa.web.model.CreateQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageService imageService;
+
     @Override
     public List<Question> getAll() {
         return questionDao.getAll().stream()
@@ -75,13 +81,18 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionWithComments createNewQuestion(Question question) {
+    public QuestionWithComments createNewQuestion(CreateQuestionRequest request) {
         final UserEntity currentUser = getCurrentUser();
 
-        final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(question.getTags());
-        final List<Tag> notExistingTags = question.getTags()
+        final Map<Tag, TagEntity> existingEntities = tagDao.mapTagsToEntities(request.getTags());
+        final List<Tag> notExistingTags = request.getTags()
                 .stream()
                 .filter(t -> !existingEntities.keySet().contains(t))
+                .collect(Collectors.toList());
+
+        final List<ImageEntity> images = request.getImages()
+                .stream()
+                .map(imageService::saveImage)
                 .collect(Collectors.toList());
 
         final List<TagEntity> newTagEntities = notExistingTags.stream()
@@ -93,9 +104,10 @@ public class QuestionServiceImpl implements QuestionService {
 
         newTagEntities.addAll(existingEntities.values());
         final QuestionEntity questionEntity = new QuestionEntity(
-                question.getBody(),
+                request.getBody(),
                 currentUser,
-                newTagEntities
+                newTagEntities,
+                images
         );
 
         questionDao.save(questionEntity);

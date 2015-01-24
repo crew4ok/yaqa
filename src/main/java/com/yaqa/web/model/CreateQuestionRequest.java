@@ -14,11 +14,15 @@ public class CreateQuestionRequest {
     @NotNull
     private final List<Tag> tags;
 
+    private final List<String> images;
+
     @JsonCreator
     public CreateQuestionRequest(@JsonProperty("body") String body,
-                                 @JsonProperty("tags") List<Tag> tags) {
+                                 @JsonProperty("tags") List<Tag> tags,
+                                 @JsonProperty("images") List<String> images) {
         this.body = body;
         this.tags = tags;
+        this.images = images;
     }
 
     public String getBody() {
@@ -27,5 +31,9 @@ public class CreateQuestionRequest {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public List<String> getImages() {
+        return images;
     }
 }

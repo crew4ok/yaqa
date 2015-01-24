@@ -45,6 +45,9 @@ public class QuestionEntity {
     @OneToMany(mappedBy = "question")
     private List<CommentEntity> comments = new ArrayList<>();
 
+    @OneToMany
+    private List<ImageEntity> images = new ArrayList<>();
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "author")
@@ -62,10 +65,11 @@ public class QuestionEntity {
      * */
     public QuestionEntity() { }
 
-    public QuestionEntity(String body, UserEntity author, List<TagEntity> tags) {
+    public QuestionEntity(String body, UserEntity author, List<TagEntity> tags, List<ImageEntity> images) {
         this.body = body;
         this.author = author;
         this.tags = tags;
+        this.images = images;
     }
 
     @Override
@@ -138,5 +142,13 @@ public class QuestionEntity {
 
     public void setComments(List<CommentEntity> comments) {
         this.comments = comments;
+    }
+
+    public List<ImageEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImageEntity> images) {
+        this.images = images;
     }
 }

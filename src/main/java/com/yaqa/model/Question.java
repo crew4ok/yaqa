@@ -1,5 +1,6 @@
 package com.yaqa.model;
 
+import com.yaqa.dao.entity.ImageEntity;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.UserEntity;
 import org.joda.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class Question {
     private final LikeResult.Type likeType;
     private final Integer commentsCount;
     private final List<Tag> tags;
+    private final List<Long> imageIds;
 
     public static Question of(QuestionEntity questionEntity, UserEntity currentUser) {
         boolean likedByCurrentUser = questionEntity.getLikes()
@@ -30,15 +32,16 @@ public class Question {
                 questionEntity.getLikes().size(),
                 likedByCurrentUser ? LikeResult.Type.LIKE : LikeResult.Type.DISLIKE,
                 questionEntity.getComments().size(),
-                questionEntity.getTags().stream().map(Tag::of).collect(Collectors.toList())
-        );
+                questionEntity.getTags().stream().map(Tag::of).collect(Collectors.toList()),
+                questionEntity.getImages().stream().map(ImageEntity::getId).collect(Collectors.toList()));
     }
 
     public Question(String body, List<Tag> tags) {
-        this(null, body, null, null, null, null, null, tags);
+        this(null, body, null, null, null, null, null, tags, null);
     }
 
-    public Question(Long id, String body, LocalDateTime creationDate, User author, Integer likesCount, LikeResult.Type likeType, Integer commentsCount, List<Tag> tags) {
+    public Question(Long id, String body, LocalDateTime creationDate, User author, Integer likesCount,
+                    LikeResult.Type likeType, Integer commentsCount, List<Tag> tags, List<Long> imageIds) {
         this.id = id;
         this.body = body;
         this.creationDate = creationDate;
@@ -47,6 +50,7 @@ public class Question {
         this.likeType = likeType;
         this.commentsCount = commentsCount;
         this.tags = tags;
+        this.imageIds = imageIds;
     }
 
     public Long getId() {
@@ -79,5 +83,9 @@ public class Question {
 
     public LikeResult.Type getLikeType() {
         return likeType;
+    }
+
+    public List<Long> getImageIds() {
+        return imageIds;
     }
 }

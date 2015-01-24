@@ -4,6 +4,7 @@ import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
+import com.yaqa.web.model.CreateQuestionRequest;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface QuestionService {
 
     List<Question> getByTagName(String tagName);
 
-    QuestionWithComments createNewQuestion(Question question);
+    QuestionWithComments createNewQuestion(CreateQuestionRequest request);
 
     QuestionWithComments postComment(Long questionId, Comment comment);
 

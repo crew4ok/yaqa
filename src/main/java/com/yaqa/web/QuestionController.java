@@ -59,8 +59,7 @@ public class QuestionController {
             throw new ValidationException(bindingResult);
         }
 
-        final Question question = new Question(request.getBody(), request.getTags());
-        return questionService.createNewQuestion(question);
+        return questionService.createNewQuestion(request);
     }
 
     @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)
