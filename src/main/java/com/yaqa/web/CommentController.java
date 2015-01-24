@@ -1,7 +1,6 @@
 package com.yaqa.web;
 
 import com.yaqa.exception.ValidationException;
-import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.QuestionWithComments;
 import com.yaqa.service.CommentService;
@@ -35,7 +34,7 @@ public class CommentController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.editComment(commentId, new Comment(null, postCommentRequest.getBody(), null, null, null, null));
+        return questionService.editComment(commentId, postCommentRequest);
     }
 
     @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)

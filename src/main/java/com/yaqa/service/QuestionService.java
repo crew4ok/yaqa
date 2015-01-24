@@ -1,10 +1,10 @@
 package com.yaqa.service;
 
-import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
 import com.yaqa.web.model.CreateQuestionRequest;
+import com.yaqa.web.model.PostCommentRequest;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public interface QuestionService {
 
     QuestionWithComments createNewQuestion(CreateQuestionRequest request);
 
-    QuestionWithComments postComment(Long questionId, Comment comment);
+    QuestionWithComments postComment(Long questionId, PostCommentRequest request);
 
-    QuestionWithComments editComment(Long commentId, Comment comment);
+    QuestionWithComments editComment(Long commentId, PostCommentRequest request);
 
     LikeResult likeQuestion(Long id);
 

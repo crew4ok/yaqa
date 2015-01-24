@@ -1,7 +1,6 @@
 package com.yaqa.web;
 
 import com.yaqa.exception.ValidationException;
-import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
@@ -75,7 +74,7 @@ public class QuestionController {
             throw new ValidationException(bindingResult);
         }
 
-        return questionService.postComment(questionId, new Comment(null, postCommentRequest.getBody(), null, null, null, null));
+        return questionService.postComment(questionId, postCommentRequest);
     }
 
     @RequestMapping(value = "/subscription", method = RequestMethod.GET)

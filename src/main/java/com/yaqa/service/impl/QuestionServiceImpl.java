@@ -12,7 +12,6 @@ import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import com.yaqa.exception.NotAnAuthorException;
-import com.yaqa.model.Comment;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
@@ -22,10 +21,12 @@ import com.yaqa.service.ImageService;
 import com.yaqa.service.QuestionService;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.CreateQuestionRequest;
+import com.yaqa.web.model.PostCommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -117,12 +118,20 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionWithComments postComment(Long questionId, Comment comment) {
+    public QuestionWithComments postComment(Long questionId, PostCommentRequest request) {
         final UserEntity currentUser = getCurrentUser();
 
         final QuestionEntity questionEntity = questionDao.getById(questionId);
 
-        final CommentEntity commentEntity = new CommentEntity(comment.getBody(), currentUser, questionEntity);
+        List<ImageEntity> images = new ArrayList<>();
+        if (request.getImages() != null) {
+            images = request.getImages()
+                    .stream()
+                    .map(imageService::saveImage)
+                    .collect(Collectors.toList());
+        }
+
+        final CommentEntity commentEntity = new CommentEntity(request.getBody(), currentUser, questionEntity, images);
 
         questionEntity.getComments().add(commentEntity);
         questionDao.merge(questionEntity);
@@ -133,7 +142,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionWithComments editComment(Long commentId, Comment comment) {
+    public QuestionWithComments editComment(Long commentId, PostCommentRequest request) {
         final UserEntity currentUser = getCurrentUser();
 
         final CommentEntity commentEntity = commentDao.getById(commentId);
@@ -142,7 +151,19 @@ public class QuestionServiceImpl implements QuestionService {
             throw new NotAnAuthorException();
         }
 
-        commentEntity.setBody(comment.getBody());
+        if (request.getBody() != null && !request.getBody().isEmpty()) {
+            commentEntity.setBody(request.getBody());
+        }
+
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            final List<ImageEntity> images = request.getImages()
+                    .stream()
+                    .map(imageService::saveImage)
+                    .collect(Collectors.toList());
+            commentEntity.setImages(images);
+        }
+
+        commentEntity.setBody(request.getBody());
         commentDao.merge(commentEntity);
 
         return QuestionWithComments.of(commentEntity.getQuestion(), currentUser);

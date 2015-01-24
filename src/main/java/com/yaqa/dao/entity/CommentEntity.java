@@ -37,6 +37,9 @@ public class CommentEntity {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime creationDate = LocalDateTime.now(DateTimeZone.UTC);
 
+    @OneToMany
+    private List<ImageEntity> images = new ArrayList<>();
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -56,10 +59,11 @@ public class CommentEntity {
     public CommentEntity() {
     }
 
-    public CommentEntity(String body, UserEntity author, QuestionEntity question) {
+    public CommentEntity(String body, UserEntity author, QuestionEntity question, List<ImageEntity> images) {
         this.body = body;
         this.author = author;
         this.question = question;
+        this.images = images;
     }
 
     public Long getId() {
@@ -104,5 +108,13 @@ public class CommentEntity {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public List<ImageEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImageEntity> images) {
+        this.images = images;
     }
 }
