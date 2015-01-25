@@ -15,7 +15,7 @@ public class UpdateUserProfileRequest {
     private final String email;
 
     private final List<Tag> tags;
-    private final String profileImage;
+    private final Long profileImageId;
 
     @JsonCreator
     public UpdateUserProfileRequest(@JsonProperty("password") String password,
@@ -23,13 +23,13 @@ public class UpdateUserProfileRequest {
                                     @JsonProperty("lastName") String lastName,
                                     @JsonProperty("email") String email,
                                     @JsonProperty("tags") List<Tag> tags,
-                                    @JsonProperty("profileImage") String profileImage) {
+                                    @JsonProperty("profileImageId") Long profileImageId) {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.tags = tags;
-        this.profileImage = profileImage;
+        this.profileImageId = profileImageId;
     }
 
     public String getPassword() {
@@ -40,8 +40,8 @@ public class UpdateUserProfileRequest {
         return tags;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public Long getProfileImageId() {
+        return profileImageId;
     }
 
     public String getFirstName() {

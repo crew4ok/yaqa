@@ -38,7 +38,7 @@ public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     public void saveUser_hp() {
-        final ImageEntity imageEntity = new ImageEntity(new byte[]{1, 2, 3, 4});
+        final ImageEntity imageEntity = new ImageEntity(new byte[]{1, 2, 3, 4}, "image/png");
         imageDao.save(imageEntity);
 
         final UserEntity user = new UserEntity(

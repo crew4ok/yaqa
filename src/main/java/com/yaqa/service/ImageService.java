@@ -1,15 +1,10 @@
 package com.yaqa.service;
 
-import com.yaqa.dao.entity.ImageEntity;
+import com.yaqa.model.Image;
 
 public interface ImageService {
 
-    /**
-     * Saves an image from base64-encoded string.
-     * @param encodedImage - base64-encoded image.
-     * @return id of the saved image.
-     */
-    ImageEntity saveImage(String encodedImage);
+    Image saveImage(byte[] imageContent);
 
-    byte[] getContentById(Long imageId);
+    Image getById(Long imageId);
 }

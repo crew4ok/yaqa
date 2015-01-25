@@ -21,6 +21,9 @@ public class ImageEntity {
     @SequenceGenerator(name = "imagesIdSequence", sequenceName = "IMAGES_ID_SEQ")
     private Long id;
 
+    @NotNull
+    private String contentType;
+
     @Basic(fetch = FetchType.LAZY)
     @Lob
     @NotNull
@@ -39,8 +42,9 @@ public class ImageEntity {
     public ImageEntity() {
     }
 
-    public ImageEntity(byte[] content) {
+    public ImageEntity(byte[] content, String contentType) {
         this.content = content;
+        this.contentType = contentType;
     }
 
     public Long getId() {
@@ -57,5 +61,13 @@ public class ImageEntity {
 
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

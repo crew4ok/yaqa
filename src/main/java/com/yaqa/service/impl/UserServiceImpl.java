@@ -1,16 +1,17 @@
 package com.yaqa.service.impl;
 
+import com.yaqa.dao.ImageDao;
 import com.yaqa.dao.TagDao;
 import com.yaqa.dao.UserDao;
 import com.yaqa.dao.entity.ImageEntity;
 import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
+import com.yaqa.exception.InvalidImageIdException;
 import com.yaqa.exception.InvalidTagException;
 import com.yaqa.exception.NotUniqueUsernameException;
 import com.yaqa.model.Tag;
 import com.yaqa.model.User;
 import com.yaqa.model.UserWithTags;
-import com.yaqa.service.ImageService;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.RegistrationRequest;
 import com.yaqa.web.model.UpdateUserProfileRequest;
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
     private TagDao tagDao;
 
     @Autowired
-    private ImageService imageService;
+    private ImageDao imageDao;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -55,9 +56,13 @@ public class UserServiceImpl implements UserService {
             // if user exists, throw an exception
             throw new NotUniqueUsernameException("Username is not unique");
         } catch (EmptyResultDataAccessException e) {
-            ImageEntity image = null;
-            if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
-                image = imageService.saveImage(request.getProfileImage());
+            ImageEntity profileImage = null;
+            if (request.getProfileImageId() != null) {
+                try {
+                    profileImage = imageDao.getById(request.getProfileImageId());
+                } catch (EmptyResultDataAccessException e1) {
+                    throw new InvalidImageIdException("Image was not found by id = " + request.getProfileImageId());
+                }
             }
 
             userDao.save(new UserEntity(
@@ -66,7 +71,7 @@ public class UserServiceImpl implements UserService {
                     request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
-                    image
+                    profileImage
             ));
         }
     }
@@ -82,7 +87,7 @@ public class UserServiceImpl implements UserService {
         final String lastName = request.getLastName();
         final String email = request.getEmail();
         final List<Tag> newTags = request.getTags();
-        final String newProfileImage = request.getProfileImage();
+        final Long newProfileImageId = request.getProfileImageId();
 
         // update password
         if (newPassword != null && !newPassword.isEmpty()) {
@@ -115,8 +120,14 @@ public class UserServiceImpl implements UserService {
         }
 
         // update profile image
-        if (newProfileImage != null && !newProfileImage.isEmpty()) {
-            user.setProfileImage(imageService.saveImage(newProfileImage));
+        if (newProfileImageId != null) {
+            ImageEntity newProfileImage;
+            try {
+                newProfileImage = imageDao.getById(newProfileImageId);
+            } catch (EmptyResultDataAccessException e) {
+                throw new InvalidImageIdException("Image was not found by id = " + request.getProfileImageId());
+            }
+            user.setProfileImage(newProfileImage);
         }
 
         userDao.save(user);

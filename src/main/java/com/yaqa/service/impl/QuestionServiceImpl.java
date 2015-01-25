@@ -1,6 +1,7 @@
 package com.yaqa.service.impl;
 
 import com.yaqa.dao.CommentDao;
+import com.yaqa.dao.ImageDao;
 import com.yaqa.dao.LikeDao;
 import com.yaqa.dao.QuestionDao;
 import com.yaqa.dao.TagDao;
@@ -11,6 +12,7 @@ import com.yaqa.dao.entity.LikeEntity;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
+import com.yaqa.exception.InvalidImageIdException;
 import com.yaqa.exception.NotAnAuthorException;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
@@ -49,6 +51,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private CommentDao commentDao;
+
+    @Autowired
+    private ImageDao imageDao;
 
     @Autowired
     private UserService userService;
@@ -107,14 +112,14 @@ public class QuestionServiceImpl implements QuestionService {
 
         // extract question images
         List<ImageEntity> images = new ArrayList<>();
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            images.addAll(
-                    request.getImages()
-                            .stream()
-                            .map(imageService::saveImage)
-                            .collect(Collectors.toList())
-            );
+        if (request.getImageIds() != null && !request.getImageIds().isEmpty()) {
+            final List<ImageEntity> foundImages = imageDao.getByIds(request.getImageIds());
 
+            if (foundImages.size() != request.getImageIds().size()) {
+                throw new InvalidImageIdException("Some images were not found by provided id");
+            }
+
+            images.addAll(foundImages);
         }
 
         final QuestionEntity questionEntity = new QuestionEntity(
@@ -137,11 +142,14 @@ public class QuestionServiceImpl implements QuestionService {
         final QuestionEntity questionEntity = questionDao.getById(questionId);
 
         List<ImageEntity> images = new ArrayList<>();
-        if (request.getImages() != null) {
-            images = request.getImages()
-                    .stream()
-                    .map(imageService::saveImage)
-                    .collect(Collectors.toList());
+        if (request.getImageIds() != null && !request.getImageIds().isEmpty()) {
+            final List<ImageEntity> foundImages = imageDao.getByIds(request.getImageIds());
+
+            if (foundImages.size() != request.getImageIds().size()) {
+                throw new InvalidImageIdException("Some images were not found by provided id");
+            }
+
+            images.addAll(foundImages);
         }
 
         final CommentEntity commentEntity = new CommentEntity(request.getBody(), currentUser, questionEntity, images);
@@ -168,12 +176,13 @@ public class QuestionServiceImpl implements QuestionService {
             commentEntity.setBody(request.getBody());
         }
 
-        if (request.getImages() != null && !request.getImages().isEmpty()) {
-            final List<ImageEntity> images = request.getImages()
-                    .stream()
-                    .map(imageService::saveImage)
-                    .collect(Collectors.toList());
-            commentEntity.setImages(images);
+        if (request.getImageIds() != null && !request.getImageIds().isEmpty()) {
+            final List<ImageEntity> foundImages = imageDao.getByIds(request.getImageIds());
+
+            if (foundImages.size() != request.getImageIds().size()) {
+                throw new InvalidImageIdException("Some images were not found by provided id");
+            }
+            commentEntity.setImages(foundImages);
         }
 
         commentEntity.setBody(request.getBody());

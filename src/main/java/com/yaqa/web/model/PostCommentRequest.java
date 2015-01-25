@@ -10,20 +10,20 @@ public class PostCommentRequest {
     @NotNull
     private final String body;
 
-    private final List<String> images;
+    private final List<Long> imageIds;
 
     @JsonCreator
     public PostCommentRequest(@JsonProperty("body") String body,
-                              @JsonProperty("images") List<String> images) {
+                              @JsonProperty("imageIds") List<Long> imageIds) {
         this.body = body;
-        this.images = images;
+        this.imageIds = imageIds;
     }
 
     public String getBody() {
         return body;
     }
 
-    public List<String> getImages() {
-        return images;
+    public List<Long> getImageIds() {
+        return imageIds;
     }
 }

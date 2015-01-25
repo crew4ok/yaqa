@@ -11,7 +11,7 @@ public class RegistrationRequest {
     @Size(min = 3)
     private final String username;
     private final String password;
-    private final String profileImage;
+    private final Long profileImageId;
 
     private final String firstName;
     private final String lastName;
@@ -21,13 +21,13 @@ public class RegistrationRequest {
     @JsonCreator
     public RegistrationRequest(@JsonProperty("username") String username,
                                @JsonProperty("password") String password,
-                               @JsonProperty("profileImage") String profileImage,
+                               @JsonProperty("profileImageId") Long profileImageId,
                                @JsonProperty("firstName") String firstName,
                                @JsonProperty("lastName") String lastName,
                                @JsonProperty("email") String email) {
         this.username = username;
         this.password = password;
-        this.profileImage = profileImage;
+        this.profileImageId = profileImageId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -41,8 +41,8 @@ public class RegistrationRequest {
         return password;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public Long getProfileImageId() {
+        return profileImageId;
     }
 
     public String getFirstName() {
