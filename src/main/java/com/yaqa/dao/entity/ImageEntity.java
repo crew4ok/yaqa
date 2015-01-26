@@ -35,6 +35,9 @@ public class ImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private CommentEntity comment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity user;
+
     /**
      * Supposed to be used only by hibernate.
      */
@@ -69,5 +72,29 @@ public class ImageEntity {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public QuestionEntity getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(QuestionEntity question) {
+        this.question = question;
+    }
+
+    public CommentEntity getComment() {
+        return comment;
+    }
+
+    public void setComment(CommentEntity comment) {
+        this.comment = comment;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

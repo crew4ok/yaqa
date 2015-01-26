@@ -65,14 +65,18 @@ public class UserServiceImpl implements UserService {
                 }
             }
 
-            userDao.save(new UserEntity(
+            final UserEntity userEntity = new UserEntity(
                     request.getUsername(),
                     passwordEncoder.encode(request.getPassword()),
                     request.getFirstName(),
                     request.getLastName(),
                     request.getEmail(),
                     profileImage
-            ));
+            );
+            if (profileImage != null) {
+                profileImage.setUser(userEntity);
+            }
+            userDao.save(userEntity);
         }
     }
 
@@ -127,6 +131,10 @@ public class UserServiceImpl implements UserService {
             } catch (EmptyResultDataAccessException e) {
                 throw new InvalidImageIdException("Image was not found by id = " + request.getProfileImageId());
             }
+            if (newProfileImage != null) {
+                newProfileImage.setUser(user);
+            }
+
             user.setProfileImage(newProfileImage);
         }
 

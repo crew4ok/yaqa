@@ -128,6 +128,7 @@ public class QuestionServiceImpl implements QuestionService {
                 questionTags,
                 images
         );
+        images.stream().forEach(i -> i.setQuestion(questionEntity));
 
         questionDao.save(questionEntity);
 
@@ -153,6 +154,7 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         final CommentEntity commentEntity = new CommentEntity(request.getBody(), currentUser, questionEntity, images);
+        images.stream().forEach(i -> i.setComment(commentEntity));
 
         questionEntity.getComments().add(commentEntity);
         questionDao.merge(questionEntity);
@@ -182,6 +184,7 @@ public class QuestionServiceImpl implements QuestionService {
             if (foundImages.size() != request.getImageIds().size()) {
                 throw new InvalidImageIdException("Some images were not found by provided id");
             }
+            foundImages.stream().forEach(i -> i.setComment(commentEntity));
             commentEntity.setImages(foundImages);
         }
 
