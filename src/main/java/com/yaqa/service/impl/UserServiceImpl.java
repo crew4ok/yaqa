@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
             );
             if (profileImage != null) {
                 profileImage.setUser(userEntity);
+                imageDao.save(profileImage);
             }
             userDao.save(userEntity);
         }
@@ -133,6 +134,7 @@ public class UserServiceImpl implements UserService {
             }
             if (newProfileImage != null) {
                 newProfileImage.setUser(user);
+                imageDao.save(newProfileImage);
             }
 
             user.setProfileImage(newProfileImage);
