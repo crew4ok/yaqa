@@ -11,15 +11,15 @@ public class CreateQuestionRequest {
     @NotNull
     private final String body;
     private final List<Tag> tags;
-    private final List<Long> imagesIds;
+    private final List<Long> imageIds;
 
     @JsonCreator
     public CreateQuestionRequest(@JsonProperty("body") String body,
                                  @JsonProperty("tags") List<Tag> tags,
-                                 @JsonProperty("imageIds") List<Long> imagesIds) {
+                                 @JsonProperty("imageIds") List<Long> imageIds) {
         this.body = body;
         this.tags = tags;
-        this.imagesIds = imagesIds;
+        this.imageIds = imageIds;
     }
 
     public String getBody() {
@@ -31,6 +31,6 @@ public class CreateQuestionRequest {
     }
 
     public List<Long> getImageIds() {
-        return imagesIds;
+        return imageIds;
     }
 }
