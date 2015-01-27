@@ -19,7 +19,6 @@ import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
 import com.yaqa.model.Tag;
 import com.yaqa.model.User;
-import com.yaqa.service.ImageService;
 import com.yaqa.service.QuestionService;
 import com.yaqa.service.UserService;
 import com.yaqa.web.model.CreateQuestionRequest;
@@ -57,9 +56,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ImageService imageService;
 
     @Override
     public List<Question> getAll() {
@@ -128,12 +124,13 @@ public class QuestionServiceImpl implements QuestionService {
                 questionTags,
                 images
         );
+
+        questionDao.save(questionEntity);
+
         images.stream().forEach(i -> {
             i.setQuestion(questionEntity);
             imageDao.save(i);
         });
-
-        questionDao.save(questionEntity);
 
         return QuestionWithComments.of(questionEntity, currentUser);
     }
@@ -157,14 +154,15 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         final CommentEntity commentEntity = new CommentEntity(request.getBody(), currentUser, questionEntity, images);
-        images.stream().forEach(i -> {
-            i.setComment(commentEntity);
-            imageDao.save(i);
-        });
 
         questionEntity.getComments().add(commentEntity);
         questionDao.merge(questionEntity);
         commentDao.save(commentEntity);
+
+        images.stream().forEach(i -> {
+            i.setComment(commentEntity);
+            imageDao.save(i);
+        });
 
         return QuestionWithComments.of(questionEntity, currentUser);
     }

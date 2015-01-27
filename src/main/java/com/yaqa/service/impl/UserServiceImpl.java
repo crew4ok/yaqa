@@ -73,11 +73,12 @@ public class UserServiceImpl implements UserService {
                     request.getEmail(),
                     profileImage
             );
+            userDao.save(userEntity);
+
             if (profileImage != null) {
                 profileImage.setUser(userEntity);
                 imageDao.save(profileImage);
             }
-            userDao.save(userEntity);
         }
     }
 
