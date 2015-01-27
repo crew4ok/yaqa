@@ -63,6 +63,7 @@ public class DaoConfig {
         config.setJdbcUrl(dbUrl);
         config.setUsername(dbUsername);
         config.setPassword(dbPassword);
+        config.setMaximumPoolSize(50);
 
         return new HikariDataSource(config);
     }
