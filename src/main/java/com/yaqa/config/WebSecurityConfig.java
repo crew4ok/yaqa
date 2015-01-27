@@ -38,41 +38,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
-            .passwordEncoder(passwordEncoder())
-            .dataSource(dataSource)
-            .usersByUsernameQuery("select username, password, 1 from users where username = ?")
-            .authoritiesByUsernameQuery("select ?, 'ROLE_USER'");
+                .passwordEncoder(passwordEncoder())
+                .dataSource(dataSource)
+                .usersByUsernameQuery("select username, password, 1 from users where username = ?")
+                .authoritiesByUsernameQuery("select ?, 'ROLE_USER'");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .exceptionHandling()
-            .authenticationEntryPoint((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-            .accessDeniedHandler((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .accessDeniedHandler((req, resp, e) -> resp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
 
-            .and()
-            .authorizeRequests()
-            .antMatchers("/register/**", "/login").permitAll()
-            .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").hasRole("USER")
+                .and()
+                .authorizeRequests()
+                .antMatchers("/register/**", "/login").permitAll()
+                .antMatchers("/question/**", "/user/**", "/tag/**", "/comment/**").hasRole("USER")
 
-            .and()
-            .formLogin()
-            .successHandler(successHandler())
-            .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
-            .loginProcessingUrl("/login")
-            .usernameParameter("username")
-            .passwordParameter("password")
+                .and()
+                .formLogin()
+                .successHandler(successHandler())
+                .failureHandler((request, response, auth) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
 
-            .and()
-            .rememberMe()
-            .tokenRepository(tokenRepository())
-            .tokenValiditySeconds(Integer.MAX_VALUE)
-
-            .and()
-            .headers()
-            .contentTypeOptions();
+                .and()
+                .rememberMe()
+                .tokenRepository(tokenRepository())
+                .tokenValiditySeconds(Integer.MAX_VALUE);
     }
 
     @Bean
