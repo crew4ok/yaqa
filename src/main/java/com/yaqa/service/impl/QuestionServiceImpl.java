@@ -184,7 +184,7 @@ public class QuestionServiceImpl implements QuestionService {
             commentEntity.setBody(request.getBody());
         }
 
-        if (request.getImageIds() != null && !request.getImageIds().isEmpty()) {
+        if (request.getImageIds() != null) {
             final List<ImageEntity> foundImages = imageDao.getByIds(request.getImageIds());
 
             if (foundImages.size() != request.getImageIds().size()) {
