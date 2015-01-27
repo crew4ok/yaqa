@@ -66,6 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
 
                 .and()
+                .headers().cacheControl()
+                .disable()
+
                 .rememberMe()
                 .tokenRepository(tokenRepository())
                 .tokenValiditySeconds(Integer.MAX_VALUE);
