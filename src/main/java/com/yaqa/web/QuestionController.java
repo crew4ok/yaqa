@@ -61,6 +61,17 @@ public class QuestionController {
         return questionService.createNewQuestion(request);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public QuestionWithComments updateQuestion(@PathVariable("id") Long questionId,
+                                               @Valid @RequestBody CreateQuestionRequest request,
+                                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+
+        return questionService.updateQuestion(questionId, request);
+    }
+
     @RequestMapping(value = "/{id}/like", method = RequestMethod.GET)
     public LikeResult likeQuestion(@PathVariable("id") Long id) {
         return questionService.likeQuestion(id);

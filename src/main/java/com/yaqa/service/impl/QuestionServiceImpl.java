@@ -14,6 +14,7 @@ import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import com.yaqa.exception.InvalidImageIdException;
 import com.yaqa.exception.NotAnAuthorException;
+import com.yaqa.exception.NotFoundException;
 import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
@@ -24,6 +25,7 @@ import com.yaqa.service.UserService;
 import com.yaqa.web.model.CreateQuestionRequest;
 import com.yaqa.web.model.PostCommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -324,6 +326,51 @@ public class QuestionServiceImpl implements QuestionService {
                 .stream()
                 .map(q -> Question.of(q, currentUser))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public QuestionWithComments updateQuestion(Long questionId, CreateQuestionRequest request) {
+        final UserEntity currentUser = getCurrentUser();
+        final QuestionEntity question = questionDao.getById(questionId);
+
+        if (!question.getAuthor().getId().equals(currentUser.getId())) {
+            throw new NotAnAuthorException();
+        }
+
+        if (request.getBody() != null && !request.getBody().isEmpty()) {
+            question.setBody(request.getBody());
+        }
+
+        if (request.getImageIds() != null) {
+            try {
+                final List<ImageEntity> images = request.getImageIds()
+                        .stream()
+                        .map(imageDao::getById)
+                        .collect(Collectors.toList());
+
+                question.setImages(images);
+            } catch (EmptyResultDataAccessException e) {
+                throw new InvalidImageIdException("Some images were not found by provided id");
+            }
+        }
+
+        if (request.getTags() != null) {
+            try {
+                final List<TagEntity> tags = request.getTags()
+                        .stream()
+                        .map(t -> tagDao.findByName(t.getTagName()))
+                        .collect(Collectors.toList());
+
+                question.setTags(tags);
+            } catch (EmptyResultDataAccessException e) {
+                throw new NotFoundException(Tag.class, request.getTags());
+            }
+        }
+
+        questionDao.merge(question);
+
+        return QuestionWithComments.of(question, currentUser);
     }
 
     private UserEntity getCurrentUser() {

@@ -41,4 +41,6 @@ public interface QuestionService {
     List<Question> getUserSubscriptionLimited(int limit);
 
     List<Question> getUserSubscriptionLimited(Long lastId, int limit);
+
+    QuestionWithComments updateQuestion(Long questionId, CreateQuestionRequest request);
 }
