@@ -25,7 +25,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         final Properties cacheMappings = new Properties();
-        cacheMappings.setProperty("/image/**", "60");
+        cacheMappings.setProperty("/image/**", String.valueOf(Integer.MAX_VALUE));
 
         final WebContentInterceptor webContentInterceptor = new WebContentInterceptor();
         webContentInterceptor.setCacheMappings(cacheMappings);
