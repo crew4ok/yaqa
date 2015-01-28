@@ -101,20 +101,20 @@ public class UserServiceImpl implements UserService {
         }
 
         // update firstName and lastName
-        if (firstName != null && !firstName.isEmpty()) {
+        if (firstName != null) {
             user.setFirstName(firstName);
         }
-        if (lastName != null && !lastName.isEmpty()) {
+        if (lastName != null) {
             user.setLastName(lastName);
         }
 
         // update email
-        if (email != null && !email.isEmpty()) {
+        if (email != null) {
             user.setEmail(email);
         }
 
         // update tags
-        if (newTags != null && !newTags.isEmpty()) {
+        if (newTags != null) {
             final Map<Tag, TagEntity> foundEntities = tagDao.mapTagsToEntities(newTags);
 
             if (foundEntities.size() != newTags.size()) {
