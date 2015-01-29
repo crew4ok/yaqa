@@ -6,7 +6,9 @@ import com.yaqa.dao.entity.TagEntity;
 import com.yaqa.dao.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +17,7 @@ import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+@Test
 @TestDaoConfig
 public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
@@ -63,6 +66,81 @@ public class QuestionDaoTest extends AbstractTransactionalTestNGSpringContextTes
         actualQuestions.sort(comparator);
 
         assertEquals(actualQuestions, questions);
+    }
+
+    public void getByUserTags_hp() {
+        final List<TagEntity> tags = Arrays.asList(
+            createTag("tag1"), createTag("tag2"), createTag("tag3"), createTag("tag4")
+        );
+        final UserEntity user1 = createUser(tags.subList(0, 2));
+        final UserEntity user2 = createUser(tags.subList(2, 4));
+
+        final List<QuestionEntity> firstUserQuestions = Arrays.asList(
+            createQuestion("body", user1, tags.subList(0, 2)),
+            createQuestion("body", user1, tags.subList(2, 4))
+        );
+
+        final List<QuestionEntity> secondUserQuestions = Arrays.asList(
+            createQuestion("body", user2, tags.subList(0, 2)),
+            createQuestion("body", user2, tags.subList(2, 4))
+        );
+
+        final List<QuestionEntity> actualFirstUserQuestions = questionDao.getByUserTagsLimited(user1, Integer.MAX_VALUE);
+
+        final List<QuestionEntity> questions = Arrays.asList(secondUserQuestions.get(0), firstUserQuestions.get(0));
+        assertEquals(actualFirstUserQuestions, questions);
+    }
+
+    public void getByUserTags_hp_limited() {
+        final List<TagEntity> tags = Arrays.asList(
+            createTag("tag1"), createTag("tag2"), createTag("tag3"), createTag("tag4")
+        );
+        final UserEntity user1 = createUser(tags.subList(0, 2));
+        final UserEntity user2 = createUser(tags.subList(2, 4));
+
+        final List<QuestionEntity> firstUserQuestions = Arrays.asList(
+            createQuestion("body", user1, tags.subList(0, 2)),
+            createQuestion("body", user1, tags.subList(1, 3))
+        );
+
+        final List<QuestionEntity> secondUserQuestions = Arrays.asList(
+            createQuestion("body", user2, tags.subList(0, 2)),
+            createQuestion("body", user2, tags.subList(1, 3))
+        );
+
+        final List<QuestionEntity> actualFirstUserQuestions = questionDao.getByUserTagsLimited(user1, 3);
+
+        final List<QuestionEntity> questions = new ArrayList<>();
+        Collections.reverse(secondUserQuestions);
+        questions.addAll(secondUserQuestions);
+        questions.add(firstUserQuestions.get(1));
+        assertEquals(actualFirstUserQuestions, questions);
+    }
+
+    public void getByUserTags_hp_limited_withLastId() {
+        final List<TagEntity> tags = Arrays.asList(
+            createTag("tag1"), createTag("tag2"), createTag("tag3"), createTag("tag4")
+        );
+        final UserEntity user1 = createUser(tags.subList(0, 2));
+        final UserEntity user2 = createUser(tags.subList(2, 4));
+
+        final List<QuestionEntity> firstUserQuestions = Arrays.asList(
+            createQuestion("body", user1, tags.subList(0, 2)),
+            createQuestion("body", user1, tags.subList(1, 3))
+        );
+
+        final List<QuestionEntity> secondUserQuestions = Arrays.asList(
+            createQuestion("body", user2, tags.subList(0, 2)),
+            createQuestion("body", user2, tags.subList(1, 3))
+        );
+
+        final List<QuestionEntity> actualFirstUserQuestions = questionDao.getByUserTagsLimited(user1, secondUserQuestions.get(1).getId(), 3);
+
+        final List<QuestionEntity> questions = new ArrayList<>();
+        questions.add(secondUserQuestions.get(0));
+        Collections.reverse(firstUserQuestions);
+        questions.addAll(firstUserQuestions);
+        assertEquals(actualFirstUserQuestions, questions);
     }
 
     private QuestionEntity createQuestion(String body, UserEntity user, List<TagEntity> tags) {

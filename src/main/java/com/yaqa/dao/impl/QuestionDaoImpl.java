@@ -47,12 +47,10 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
                         " from QuestionEntity q " +
                         " inner join q.tags as t " +
                         " where t in :tags " +
-                        " and q.author = :author " +
                         " group by q.id " +
-                        " order by q.id ",
+                        " order by q.id desc",
                 QuestionEntity.class)
                 .setParameter("tags", author.getSubscriptionTags())
-                .setParameter("author", author)
                 .setMaxResults(limit)
                 .getResultList();
     }
@@ -67,13 +65,11 @@ public class QuestionDaoImpl extends GenericDaoImpl<QuestionEntity> implements Q
                         " from QuestionEntity q " +
                         " inner join q.tags as t " +
                         " where t in :tags " +
-                        " and q.author = :author " +
                         " and q.id < :lastId " +
                         " group by q.id " +
-                        " order by q.id",
+                        " order by q.id desc",
                 QuestionEntity.class)
                 .setParameter("tags", author.getSubscriptionTags())
-                .setParameter("author", author)
                 .setParameter("lastId", lastId)
                 .setMaxResults(limit)
                 .getResultList();
