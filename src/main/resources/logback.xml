@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.yaqa" level="INFO"/>
+    <logger name="com.yaqa" level="debug"/>
 
     <timestamp key="byHour" datePattern="yyyyMMdd'T'HH"/>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
