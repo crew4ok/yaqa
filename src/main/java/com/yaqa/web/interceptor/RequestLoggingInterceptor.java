@@ -14,6 +14,10 @@ public class RequestLoggingInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return true;
+        }
+
         StringBuilder cookieStr = new StringBuilder(cookies.length * 16);
         for (Cookie cookie : cookies) {
             cookieStr.append(cookie.getName())
