@@ -352,6 +352,7 @@ public class QuestionServiceImpl implements QuestionService {
                         })
                         .collect(Collectors.toList());
 
+                question.getImages().stream().forEach(i -> i.setQuestion(null));
                 question.setImages(images);
             } catch (EmptyResultDataAccessException e) {
                 throw new InvalidImageIdException("Some images were not found by provided id");
