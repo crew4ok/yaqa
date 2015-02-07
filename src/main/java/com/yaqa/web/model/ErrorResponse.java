@@ -1,7 +1,5 @@
 package com.yaqa.web.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 public class ErrorResponse {
     private final String errorMessage;
 

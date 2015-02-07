@@ -320,7 +320,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getUserSubscriptionLimited(Long lastId, int limit) {
         final UserEntity currentUser = getCurrentUser();
-        final List<TagEntity> userTags = currentUser.getSubscriptionTags();
 
         return questionDao.getByUserTagsLimited(currentUser, lastId, limit)
                 .stream()
