@@ -12,6 +12,10 @@ public class Tag {
         return new Tag(tagEntity.getId(), tagEntity.getTagName());
     }
 
+    public Tag(String tagName) {
+        this(null, tagName);
+    }
+
     @JsonCreator
     public Tag(@JsonProperty("id") Long id,
                @JsonProperty("tagName") String tagName) {

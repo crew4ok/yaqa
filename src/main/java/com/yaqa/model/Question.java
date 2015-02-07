@@ -33,7 +33,8 @@ public class Question {
                 likedByCurrentUser ? LikeResult.Type.LIKE : LikeResult.Type.DISLIKE,
                 questionEntity.getComments().size(),
                 questionEntity.getTags().stream().map(Tag::of).collect(Collectors.toList()),
-                questionEntity.getImages().stream().map(ImageEntity::getId).collect(Collectors.toList()));
+                questionEntity.getImages().stream().map(ImageEntity::getId).collect(Collectors.toList())
+        );
     }
 
     public Question(String body, List<Tag> tags) {

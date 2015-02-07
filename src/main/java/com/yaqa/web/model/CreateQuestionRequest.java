@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yaqa.model.Tag;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CreateQuestionRequest {
-    @NotNull
     private final String body;
     private final List<Tag> tags;
     private final List<Long> imageIds;

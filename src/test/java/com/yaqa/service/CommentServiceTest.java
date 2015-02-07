@@ -1,4 +1,4 @@
-package com.yaqa;
+package com.yaqa.service;
 
 import com.yaqa.config.DaoConfig;
 import com.yaqa.config.ServiceConfig;
@@ -9,7 +9,6 @@ import com.yaqa.dao.entity.CommentEntity;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.UserEntity;
 import com.yaqa.model.LikeResult;
-import com.yaqa.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

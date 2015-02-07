@@ -345,7 +345,11 @@ public class QuestionServiceImpl implements QuestionService {
             try {
                 final List<ImageEntity> images = request.getImageIds()
                         .stream()
-                        .map(imageDao::getById)
+                        .map(i -> {
+                            ImageEntity entity = imageDao.getById(i);
+                            entity.setQuestion(question);
+                            return entity;
+                        })
                         .collect(Collectors.toList());
 
                 question.setImages(images);
@@ -358,7 +362,14 @@ public class QuestionServiceImpl implements QuestionService {
             try {
                 final List<TagEntity> tags = request.getTags()
                         .stream()
-                        .map(t -> tagDao.findByName(t.getTagName()))
+                        .map(t -> {
+                            TagEntity entity = tagDao.findByName(t.getTagName());
+                            if (entity == null) {
+                                entity = new TagEntity(t.getTagName());
+                                tagDao.save(entity);
+                            }
+                            return entity;
+                        })
                         .collect(Collectors.toList());
 
                 question.setTags(tags);
