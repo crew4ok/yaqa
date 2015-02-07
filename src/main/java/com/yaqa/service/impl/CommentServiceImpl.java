@@ -58,11 +58,13 @@ public class CommentServiceImpl implements CommentService {
 
     private void likeComment(CommentEntity comment, UserEntity user) {
         final LikeEntity like = new LikeEntity(user, comment);
+
+        likeDao.save(like);
+
         comment.getLikes().add(like);
         user.getLikes().add(like);
 
         commentDao.merge(comment);
-        likeDao.save(like);
         userDao.merge(user);
     }
 
