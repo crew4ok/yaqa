@@ -61,7 +61,7 @@ public class CommentServiceTest extends AbstractTransactionalTestNGSpringContext
         commentEntity = comment;
     }
 
-    @Test(threadPoolSize = 10)
+    @Test
     public void testCommentLike() {
         final LikeResult likeResult = commentService.likeComment(commentEntity.getId());
         assertEquals(likeResult.getLikesCount(), Long.valueOf(1));

@@ -10,6 +10,7 @@ import com.yaqa.dao.UserDao;
 import com.yaqa.dao.entity.ImageEntity;
 import com.yaqa.dao.entity.QuestionEntity;
 import com.yaqa.dao.entity.UserEntity;
+import com.yaqa.model.LikeResult;
 import com.yaqa.model.Question;
 import com.yaqa.model.QuestionWithComments;
 import com.yaqa.model.Tag;
@@ -58,6 +59,19 @@ public class QuestionServiceTest extends AbstractTransactionalTestNGSpringContex
         userDao.save(user);
 
         TestUtils.setCurrentAuthenticatedUser(user);
+    }
+
+    public void likeQuestion_hp() {
+        QuestionEntity question = createQuestion();
+        questionDao.save(question);
+
+        final LikeResult likeResult = questionService.likeQuestion(question.getId());
+        assertEquals(likeResult.getLikesCount(), Long.valueOf(1));
+        assertEquals(likeResult.getType(), LikeResult.Type.LIKE);
+
+        final LikeResult dislikeResult = questionService.likeQuestion(question.getId());
+        assertEquals(dislikeResult.getLikesCount(), Long.valueOf(0));
+        assertEquals(dislikeResult.getType(), LikeResult.Type.DISLIKE);
     }
 
     public void updateQuestion_hp() {

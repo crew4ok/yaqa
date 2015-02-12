@@ -230,23 +230,32 @@ public class QuestionServiceImpl implements QuestionService {
 
     private void likeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
         final LikeEntity like = new LikeEntity(currentUserEntity, question);
+        likeDao.save(like);
+
         question.getLikes().add(like);
+        currentUserEntity.getLikes().add(like);
 
         questionDao.merge(question);
-        likeDao.save(like);
+        userDao.merge(currentUserEntity);
     }
 
     private void dislikeQuestion(QuestionEntity question, UserEntity currentUserEntity) {
-        final Map<Boolean, List<LikeEntity>> partitionedLikes = question.getLikes()
+        final LikeEntity like = question.getLikes()
                 .stream()
-                .collect(Collectors.partitioningBy(l -> l.getLiker().equals(currentUserEntity)));
+                .filter(l -> {
+                    UserEntity liker = l.getLiker();
+                    return liker != null && liker.getId().equals(currentUserEntity.getId());
+                })
+                .findFirst()
+                .get();
 
-        final List<LikeEntity> likesToRemove = partitionedLikes.get(true);
-        final List<LikeEntity> likesToRetain = partitionedLikes.get(false);
+        question.getLikes().remove(like);
+        currentUserEntity.getLikes().remove(like);
 
-        question.setLikes(likesToRetain);
+        userDao.merge(currentUserEntity);
         questionDao.merge(question);
-        likesToRemove.forEach(likeDao::remove);
+
+        likeDao.remove(like);
     }
 
 
